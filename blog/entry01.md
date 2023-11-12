@@ -25,13 +25,7 @@ I am currently on the defining and researching the problem. I chose to make a to
 
 ### Skills
 Some skills I used when learning Kaboom and Phaser were how to google, debugging and attention to detail. I used google to search through documentations, posts on forums and video tutorial. Which had helped me learn a bunch of functions the tool had to offer. While tinkering by making a simple game, I used debugging and attention to detail as kaboom / phaser both had strict syntaxes and the entire code will not run if there is a syntax error. I used attention to detail in the IDE and looked for opening and closing colors of syntaxes. If they were red, it meant that there isn't the other.
-```js
-// error
-
-```
-
-
-I used debugging to fix all the errors preventing things from starting, such as when I had to use add `import Main from "./Main.js"` so that the game will be able to access the config file.
+I used the debugger in the devoloper tools to fix all the errors preventing things from starting, such as when I had to use add import files so that the game will be able to access the config file.
 
 
 [Next](entry02.md)
