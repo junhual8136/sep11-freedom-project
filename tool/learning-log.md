@@ -10,8 +10,10 @@ Project: **X**
 * I had no clue how to start until I watched a [tutorial](https://www.youtube.com/watch?v=fdXcD9X4NrQ)
 * I set up a config file with a scene, and now I'm learning all the functions from the documentation
 
-X/X/X:
-* Text
+11/13/2023:
+* Set up a basic kaboom (config)[https://kaboomjs.com/doc/setup], (canvas)[https://kaboomjs.com/#kaboom], and (plugins)[https://github.com/notnullgames/tiled-kaboom]
+* attempted to load tilemap with the plugin
+* attempted to create a sprite and load it into the canvas 
 
 
 <!--
