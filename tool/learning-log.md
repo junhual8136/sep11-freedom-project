@@ -31,7 +31,7 @@ onKeyDown("d", () => {
     player.move(SPEED, 0) // moves right
 })
 ```
-* Also learned what arrow functions are from this and (this)[https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions] which are basically just like normal functions but arranged differently and also automatically returns if its only one line
+* Also learned what arrow functions are from this and [this](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions) which are basically just like normal functions but arranged differently and also automatically returns if its only one line
 ```js
 // normal function
 function add(a,b) {
