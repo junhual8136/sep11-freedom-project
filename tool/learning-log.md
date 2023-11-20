@@ -13,9 +13,35 @@ Project: **X**
 11/13/2023:
 * Set up a basic kaboom (config)[https://kaboomjs.com/doc/setup], (canvas)[https://kaboomjs.com/#kaboom], and (plugins)[https://github.com/notnullgames/tiled-kaboom]
 * attempted to load tilemap with the plugin
-* attempted to create a sprite and load it into the canvas 
+* attempted to create a sprite and load it into the canvas
 
-
+11/20/2023
+* I tried to use `onKeyDown()` to make wasd controls
+```js
+onKeyDown("w", () => {
+    sprite.move(0, -SPEED) // moves up
+})
+onKeyDown("a", () => {
+    sprite.move(-SPEED, 0) // moves left
+})
+onKeyDown("s", () => {
+    sprite.move(-SPEED, 0) // moves down
+})
+onKeyDown("d", () => {
+    player.move(SPEED, 0) // moves right
+})
+```
+* Also learned arrow functions from this which are basically just like normal functions but arranged differently and also automatically returns if its only one line
+```js
+// normal function
+function add(a,b) {
+    return a + b
+}
+// arrow function
+let add = (a,b) => {
+    return a + b
+}
+```
 <!--
 * Links you used today (websites, videos, etc)
 * Things you tried, progress you made, etc
