@@ -46,7 +46,7 @@ let add = (a,b) => a + b
     * Learned `class` and `constructor()` functions
     * methods are functions inside an object
 * objects are similar to css in syntaxes expect properties are seperated by commas instead of semicolons.
-* `call()` is used to call methods inside objects
+* [link](https://www.w3schools.com/js/js_function_call.asp) `call()` is used to call methods inside objects
 
 <!--
 * Links you used today (websites, videos, etc)
