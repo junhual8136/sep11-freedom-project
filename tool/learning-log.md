@@ -44,7 +44,9 @@ let add = (a,b) => a + b
 11/27/2023
 * I had to learn objects and classes in JS because kaboom uses them and I had no clue how to use them.
     * Learned `class` and `constructor()` functions
-* objects are similar to css in syntaxes expect properties are seperated by commas instead of semicolons. 
+    * methods are functions inside an object
+* objects are similar to css in syntaxes expect properties are seperated by commas instead of semicolons.
+* `call()` is used to call methods inside objects
 
 <!--
 * Links you used today (websites, videos, etc)
