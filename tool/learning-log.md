@@ -45,6 +45,7 @@ let add = (a,b) => a + b
 * I had to learn objects and classes in JS because kaboom uses them and I had no clue how to use them.
     * Learned `class` and `constructor()` functions
     * methods are functions inside an object
+    * `this` in js are used inside `constructors()` and logs information of that object
 * objects are similar to css in syntaxes expect properties are seperated by commas instead of semicolons.
 * [link](https://www.w3schools.com/js/js_function_call.asp) `call()` is used to call methods inside objects
 * tried learning regex with [regex101]{https://regex101.com/}
