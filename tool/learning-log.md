@@ -50,6 +50,14 @@ let add = (a,b) => a + b
 * [link](https://www.w3schools.com/js/js_function_call.asp) `call()` is used to call methods inside objects
 * tried learning regex with [regex101]{https://regex101.com/}
 
+
+12/4/2023
+* Tried looking for tutorials online for kaboom Js that aren't just a step by step guide on how to make a specific game
+    * looked through source codes of games on replit that were made with Kaboom.Js
+* Continued to learn the basicas of object oriented programming.
+    * learned constructor and factory functions
+    * `for in` and `for of` loops
+
 <!--
 * Links you used today (websites, videos, etc)
 * Things you tried, progress you made, etc
