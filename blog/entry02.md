@@ -58,6 +58,10 @@ By creating a variable call `speed`, I was able to change how fast the sprite wo
 
 I also learned how to move the camera by using `camPos`. With that function, I set the parameters to the sprites position with `player.pos` which would lock the camera on the sprite. I also used `onUpdate()` to update the camera whenever the spirte moves. 
 
+### EDP 
+I am currently on step 3 of the engineering design process where I'm learning how to use my tool (kaboom.js) and how to use that knowledge to create a game. I used the [kaboom documentation](https://kaboomjs.com/#body), [replit doucmentation](https://docs.replit.com/tutorials/kaboom/physics-playground-with-kaboom), and [youtube tutorials](https://www.youtube.com/watch?v=VaADdGSKEbA) to learn. Which I then use to tinker and create something similar. The next step would be to start creating the game after I finish learning the rest of the features Kaboom.js has and some more javascript features such as objects. 
+
+
 [Previous](entry01.md) | [Next](entry03.md)
 
 [Home](../README.md)
