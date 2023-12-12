@@ -45,7 +45,18 @@ const map = [
 isStatic?: boolean
 If object is static, won't move, and all non static objects won't move past it.
 ```
+I also learned how to create inputs such as movement with WASD with the `onKeyDown()` function
+```js
+let speed = 50
+onKeyDown('w', () => {player.move(0, -speed)})
+onKeyDown('a', () => {player.move(-speed, 0)})
+onKeyDown('s', () => {player.move(0, speed)})
+onKeyDown('d', () => {player.move(speed, 0)})
+player.onUpdate(() => {camPos(player.pos )})
+```
+By creating a variable call `speed`, I was able to change how fast the sprite would move in the future. The `.move(x,y)` moves a sprite in a certain positon so based on the key pressed, It would move the value of `speed` in that certain direction. For example, `onKeyDown('a', () => {player.move(-speed, 0)})` would make the sprite move -50 pixels on the x coordinate (50px to the left). 
 
+I also learned how to move the camera by using `camPos`. With that function, I set the parameters to the sprites position with `player.pos` which would lock the camera on the sprite. I also used `onUpdate()` to update the camera whenever the spirte moves. 
 
 [Previous](entry01.md) | [Next](entry03.md)
 
