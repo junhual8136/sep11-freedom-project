@@ -58,9 +58,12 @@ By creating a variable call `speed`, I was able to change how fast the sprite wo
 
 I also learned how to move the camera by using `camPos`. With that function, I set the parameters to the sprites position with `player.pos` which would lock the camera on the sprite. I also used `onUpdate()` to update the camera whenever the spirte moves. 
 
+During the winter break, I plan on creating a basic game that uses most of the features I learned. 
 ### EDP 
 I am currently on step 3 of the engineering design process where I'm learning how to use my tool (kaboom.js) and how to use that knowledge to create a game. I used the [kaboom documentation](https://kaboomjs.com/#body), [replit doucmentation](https://docs.replit.com/tutorials/kaboom/physics-playground-with-kaboom), and [youtube tutorials](https://www.youtube.com/watch?v=VaADdGSKEbA) to learn. Which I then use to tinker and create something similar. The next step would be to start creating the game after I finish learning the rest of the features Kaboom.js has and some more javascript features such as objects. 
 
+### skills 
+Some skills I improved were how to google where I searched up vague error messages and found solutions. Such as when I got the error `solid() is not defined` which led me to use google to find out that `solid()` was removed in the newest verison of kaboom. With google, I was able to find websites that had kaboom documentation and tutorials. I also developed the skill time management since I didn't have much time to learn my tool on most days. What I did was just work on it every other day for 30 minutes - 1 hour. I continued to improve on attention to detail and used the developer tools debugger to find out which line was causing the error and using the IDE's syntax highlighting to spot missing closing ] or } which is used a lot in kaboom. 
 
 [Previous](entry01.md) | [Next](entry03.md)
 
