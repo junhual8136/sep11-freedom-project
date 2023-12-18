@@ -57,7 +57,10 @@ let add = (a,b) => a + b
 * Continued to learn the basicas of object oriented programming.
     * learned constructor and factory functions
     * `for in` and `for of` loops
-
+ 
+  
+12/17/2023
+* Messed around with tilemaps and sprite loading 
 <!--
 * Links you used today (websites, videos, etc)
 * Things you tried, progress you made, etc
