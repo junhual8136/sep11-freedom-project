@@ -64,6 +64,8 @@ let add = (a,b) => a + b
 
 2/1/2024
 *  created a constructor function that when called, creates a new object into the game
+* tried to use the follow() method to make a entity move toward the player but it just teleports
+* used follow() instead on text that display an entity's health instead
 <!--
 * Links you used today (websites, videos, etc)
 * Things you tried, progress you made, etc
