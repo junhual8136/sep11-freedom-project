@@ -6,7 +6,7 @@ I've been slowly learning new concepts and creating a game which will probably b
 
 I reazlied that I had to put a lot of checks and updates in the `onUpdate(()=>{ })` function. The function will execute everything inside every frame. Kaboom runs at 60 fps, so the code inside will run 60 times a second.
 
-During this time, I found out that Kaboom.js had a [Discord server](https://discord.com/invite/aQ6RuQm3TF) and there are channels where you could ask questions or help about anything related the framework. Which I used when there were things i was stucked on.
+During this time, I had also found out that Kaboom.js had a [Discord server](https://discord.com/invite/aQ6RuQm3TF) and there are channels where you could ask questions or help about anything related the framework.
 
 
 I learned how to create health in kaboom with variables and display it in text.
