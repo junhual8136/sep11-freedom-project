@@ -36,6 +36,10 @@ onUpdate(() => {
 ```
 This should always update the text location so it would always be in the top-left part of the screen to the player(camera is focused on).
 
+### EDP
+
+
+
 During feburary break, I will be learning how to create and use scenes so I could make a death and maybe a start menu.
 
 
