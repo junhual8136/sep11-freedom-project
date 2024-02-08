@@ -9,7 +9,7 @@ I reazlied that I had to put a lot of checks and updates in the `onUpdate(()=>{ 
 During this time, I had also found out that Kaboom.js had a [Discord server](https://discord.com/invite/aQ6RuQm3TF) and there are channels where you could ask questions or help about anything related the framework.
 
 
-I learned how to create health in kaboom with variables and display it in text.
+By going through the [kaboom documentation](https://kaboomjs.com/), and searching through random keywords that are related to what creating text. I learned how to create health in kaboom with variables and display it in text with the `add([text]).` function
 ```js
 let playerHealth = 100
 const hpBar = add([
@@ -36,11 +36,20 @@ onUpdate(() => {
 ```
 This should always update the text location so it would always be in the top-left part of the screen to the player(camera is focused on).
 
-### EDP
-
-
-
 During feburary break, I will be learning how to create and use scenes so I could make a death and maybe a start menu.
+
+
+### EDP
+I am currently on step 4 of the engineering design process where I know what I'm making and finding specific functions in kaboom.js that will be needed to make it. I used the [kaboom documentation](https://kaboomjs.com/) to look for these functions. I then used those functions such as `add([text)` and `onUpdate(()=>{})` to create a basic game and tinker around with the settings to make it work for the game. The next step would be for me to build my mvp.
+
+### Skills
+I continued to improve my skills on how to google and debugging. While on the kaboom documenation, I found out that kaboom.js had a discord server which can offer help whenever I'm stuck. I also googled how to create certain features with kaboom. I also searched for how to rotate a sprite to face the direction of the mouse since I don't know the how to calculate the angles to turn. I found [This](https://blog.jordienric.com/kaboomjs-how-to-get-the-angle-of-the-mouse-in-relation-to-a-playerobject) which had:
+```js
+const angle = Math.atan2(mouseP.y - playerP.y, mouseP.x - playerP.x);
+const angleInDeg = (angle * 180) / Math.PI;
+```
+which is the math required to find the degree of the mouse in relation of the sprite.
+I also continued to use my debugging skills to fix issues with my code. One example was when I had to find a solution to the health text not being fixed to the screen. I ended up using `onUpdate(()=>)` to move the sprite every frame to the very top left of the camera.
 
 
 
