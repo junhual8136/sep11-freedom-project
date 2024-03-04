@@ -10,10 +10,17 @@ setBackground(Color.fromHex('#ADD8E6'))
 
 loadMap()
 
+//====================================================================================================================
+// Assets
+//====================================================================================================================
 const grassTile16x = loadSprite("grass-tile-16", "assets/grass.png")
 const enemyTile = loadSprite("grass-tile-16", "assets/grass.png")
 let speed = 60
 const mainPlayer = loadSprite("64xTile", "assets/64xTile.png")
+
+//====================================================================================================================
+// Main player
+//====================================================================================================================
 const player = add([sprite("64xTile"), area(),body(),pos(30, 20),scale(0.5),"player"], )
 
 let playerHealth = 100
@@ -57,30 +64,15 @@ onUpdate(() => {
     player.angle = angleInDeg
  })
 
-
-// class Enemy {
-//     constructor(level) {
-//         let randomX = Math.ceil(Math.random(1,200) * 100)
-//         let randomY = Math.ceil(Math.random(1,200) * 100)
-//         this.level = level
-//         this.enemyHealth = 100 * level
-//         this.enemy = add([sprite("64xTile"), area(),body(),pos(randomX, randomY),scale(0.5),health(100),"hostile"],)
-//         this.HostileHpBar = add([
-//             text(this.enemyHealth, {size: 12,}),
-//             pos(player.pos.x-10, player.pos.y-10),
-//             follow(this.enemy),])
-//     }
-// }
-
-
+//====================================================================================================================
+// Enemies
+//====================================================================================================================
 let firstWave = []
 for (let first=0;first<=1;first++) {
     firstWave.push(`firstEnemy${first}`)
     let randomX = Math.ceil(Math.random(1,200) * 100)
     let randomY = Math.ceil(Math.random(1,200) * 100)
     firstWave[first] = add([sprite("64xTile"), area(),body(),pos(randomX, randomY),scale(0.5),"hostile",{health: 100}])
-    console.log(firstWave[first].health)
-    // new Enemy(1)
 }
 onUpdate(() => {
     onCollide("hostile", "player", (hostile,player) => {
