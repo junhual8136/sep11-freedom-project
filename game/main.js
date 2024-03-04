@@ -77,6 +77,9 @@ for (let first=0;first<=1;first++) {
 onUpdate(() => {
     onCollide("hostile", "player", (hostile,player) => {
         console.log(hostile.health)
+        if (hostile.health <= 0) {
+            destroy(hostile)
+        }
     })
 })
 
