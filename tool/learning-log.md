@@ -73,3 +73,9 @@ let add = (a,b) => a + b
 * Questions you still have
 * What you're going to try next
 -->
+
+3/4/2024
+* attempted to center the game screen with css
+    * putting the game inside a div
+* tried using the built in health() to create a health system and used onUpdate() to check health every frame
+* found out about html modules which allowed me to create different js files so I can seperate the main code and the code for the game map.
