@@ -79,3 +79,6 @@ let add = (a,b) => a + b
     * putting the game inside a div
 * tried using the built in health() to create a health system and used onUpdate() to check health every frame
 * found out about html modules which allowed me to create different js files so I can seperate the main code and the code for the game map.
+
+3/14 
+* Attempted to create GUIs with the `draw` and shape functions like `rect`
