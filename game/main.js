@@ -56,13 +56,20 @@ onUpdate(() => {
         hpBar.text = "dead"
     }
  })
- onMouseMove(() => {
-    const playerPosition = player.pos;
-    const mousePosition = mousePos();
-    const angle = Math.atan2(mousePosition.y - playerPosition.y, mousePosition.x - playerPosition.x);
-    const angleInDeg = (angle * 180) / Math.PI;
-    player.angle = angleInDeg
- })
+//  onMouseMove(() => {
+//     const playerPosition = player.pos
+//     const mousePosition = mousePos()
+//     // const angle = Math.atan2(mousePosition.y - playerPosition.y, mousePosition.x - playerPosition.x)
+//     const angle = Math.atan2(mousePosition.x - playerPosition.x,mousePosition.y - playerPosition.y)
+//     const angleInDeg = (angle * 180) / Math.PI
+//     player.angle = angleInDeg
+//     drawLine({
+//         p1: player.pos,
+//         p2: mousePos(),
+//         width: 4,
+//         color: rgb(0, 0, 255),
+//     })
+//  })
 
 //====================================================================================================================
 // Enemies
@@ -75,12 +82,39 @@ for (let first=0;first<=1;first++) {
     firstWave[first] = add([sprite("64xTile"), area(),body(),pos(randomX, randomY),scale(0.5),"hostile",{health: 100}])
 }
 onUpdate(() => {
-    onCollide("hostile", "player", (hostile,player) => {
-        console.log(hostile.health)
-        if (hostile.health <= 0) {
-            destroy(hostile)
-        }
-    })
+})
+
+
+onClick(() => {
+    const playerP = player.pos
+    const mouseP = mousePos()
+    const angle = Math.atan2(mouseP.y - playerP.y, mouseP.x - playerP.x)
+    const angleInDeg = (angle * 180) / Math.PI
+    spawnBullet(playerP, mouseP)
+  })
+function spawnBullet(p, mouseP) {
+  const BULLET_SPEED = 600
+  const bullet = add([
+    rect(5, 5),
+    area(),
+    pos(p.sub(12,12)),
+    anchor("center"),
+    color(255, 0, 0),
+    outline(1),
+    move(mouseP, BULLET_SPEED),
+    "projectile",
+  ]);
+}
+
+
+let damage = 20
+onCollide("projectile", "hostile", (projectile,hostile) => {
+    console.log(hostile.health)
+    hostile.health -= damage
+    destroy(projectile)
+    if (hostile.health <= 0) {
+        destroy(hostile)
+    }
 })
 
 
