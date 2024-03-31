@@ -1,9 +1,11 @@
 import {loadMap} from './map.js'
 import {createStartMenu} from './start-menu.js'
 
+let gameWidth = 1200
+let gameHeight = 800
 kaboom({
-    width: 1200,
-    height: 800,
+    width: gameWidth,
+    height: gameHeight,
     font: "sans-serif",
     canvas: document.querySelector("game"),
 })
@@ -54,7 +56,11 @@ scene('game', () => {
         }
     })
 
+    onKeyPress("space", () => {
+        playerHealth = 0
+    })
 
+    })
     let firstWave = []
     for (let first=0;first<=1;first++) {
         firstWave.push(`firstEnemy${first}`)
@@ -85,8 +91,8 @@ scene('game', () => {
         }
     })
 
-})
 
 
-export { grassTile16x }
+
+export { grassTile16x, gameWidth, gameHeight }
 

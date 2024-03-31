@@ -85,3 +85,6 @@ let add = (a,b) => a + b
 
 3/24
 * attempted to make a projectile system using `Math.atan2(x,y)` to get the angle between the mouse and the player.
+
+3/31
+* `scene('name',()=>{}` to make game menus such as start and game over
