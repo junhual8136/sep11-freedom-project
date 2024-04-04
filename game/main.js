@@ -1,5 +1,6 @@
 import {loadMap} from './map.js'
 import {createStartMenu} from './start-menu.js'
+import {endGame} from './dead-menu.js'
 
 let gameWidth = 1200
 let gameHeight = 800
@@ -10,6 +11,7 @@ kaboom({
     canvas: document.querySelector("game"),
 })
 setBackground(Color.fromHex('#ADD8E6'))
+
 
 const grassTile16x = loadSprite("grass-tile-16", "assets/grass.png")
 const enemyTile = loadSprite("grass-tile-16", "assets/grass.png")
@@ -50,9 +52,10 @@ scene('game', () => {
                 text(`you died`, {size: 100,}),
                 pos(player.pos.x, player.pos.y),
             ])
-            speed = 0
-            hpBar.value = -1000
-            hpBar.text = "dead"
+            // speed = 0
+            // hpBar.value = -1000
+            // hpBar.text = "dead"
+            endGame()
         }
     })
 
