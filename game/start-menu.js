@@ -8,9 +8,9 @@ function createStartMenu() {
         const score = add([
             text("name to be decided", {
                 font: 'times-new-roman',
-                size: 40,
+                size: 50,
             }),
-            pos(gameWidth/6, 130),
+            pos(gameWidth/6, 140),
             color(RED),
         ])
 

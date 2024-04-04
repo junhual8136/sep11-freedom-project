@@ -28,10 +28,10 @@ function endGame() {
                 font: 'times-new-roman',
                 size: 50,
             }),
-            pos(gameWidth/2, gameHeight/3),
+            pos(gameWidth/2, gameHeight/4),
             color(RED),
         ])
-        createButton('menu',gameWidth/2,gameHeight/1.5, ()=> {
+        createButton('menu',gameWidth/1.85,350, ()=> {
             go('startMenu')
         })
     })

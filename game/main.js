@@ -47,7 +47,7 @@ scene('game', () => {
         hpBar.text = `Health:${playerHealth}`
         hpBar.value = playerHealth
 
-        if (hpBar.value <= 0 && hpBar.value > -1000) {
+        if (hpBar.value <= 0) {
             const death = add([
                 text(`you died`, {size: 100,}),
                 pos(player.pos.x, player.pos.y),
@@ -63,7 +63,7 @@ scene('game', () => {
         playerHealth = 0
     })
 
-    })
+
     let firstWave = []
     for (let first=0;first<=1;first++) {
         firstWave.push(`firstEnemy${first}`)
@@ -93,7 +93,7 @@ scene('game', () => {
             destroy(hostile)
         }
     })
-
+})
 
 
 
