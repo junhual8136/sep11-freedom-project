@@ -4,14 +4,15 @@ import {endGame} from './dead-menu.js'
 
 let gameWidth = 1200
 let gameHeight = 800
+
 kaboom({
     width: gameWidth,
     height: gameHeight,
     font: "sans-serif",
     canvas: document.querySelector("game"),
 })
-setBackground(Color.fromHex('#ADD8E6'))
 
+setBackground(Color.fromHex('#ADD8E6'))
 
 const grassTile16x = loadSprite("grass-tile-16", "assets/grass.png")
 const enemyTile = loadSprite("grass-tile-16", "assets/grass.png")
@@ -21,10 +22,12 @@ createStartMenu()
 
 scene('game', () => {
     loadMap()
-    const player = add([sprite("64xTile"), area(),body(),pos(30, 20),scale(0.5),"player"], )
-    let speed = 60
 
+    const player = add([sprite("64xTile"), area(),body(),pos(200, 100),scale(0.5),"player"],)
+
+    let speed = 90
     let playerHealth = 100
+
     const hpBar = add([
         text(`Health:${playerHealth}`, {size: 24,}),
         pos(player.pos.x-590, player.pos.y-400),
@@ -37,6 +40,7 @@ scene('game', () => {
     onKeyDown('s', () => {player.move(0, speed)})
     onKeyDown('d', () => {player.move(speed, 0)})
     player.onUpdate(() => {camPos(player.pos )})
+
     onUpdate(() => {
         // shift to run (2x speed)
         if (isKeyDown("shift")) speed = 120
@@ -57,19 +61,30 @@ scene('game', () => {
             // hpBar.text = "dead"
             endGame()
         }
+
+        // hostileAlive.forEach(hostile => {
+        //     hostile.move(player.pos.sub(hostile.pos))
+        //     // console.log(hostile.pos)
+        // })
     })
+
+
 
     onKeyPress("space", () => {
         playerHealth = 0
     })
 
-
-    let firstWave = []
-    for (let first=0;first<=1;first++) {
-        firstWave.push(`firstEnemy${first}`)
-        let randomX = Math.ceil(Math.random(1,200) * 100)
-        let randomY = Math.ceil(Math.random(1,200) * 100)
-        firstWave[first] = add([sprite("64xTile"), area(),body(),pos(randomX, randomY),scale(0.5),"hostile",{health: 100}])
+    const rng = (min, max) => Math.floor(Math.random() * (max - min) + min)
+    const hostileAlive = []
+    for (let i=0;i<=2;i++) {
+        hostileAlive.push(`firstEnemy${i}`)
+        const playerX = player.pos.x
+        const playerY = player.pos.y
+        let randomX = rng(playerX - 500, playerX + 500)
+        let randomY = rng(playerY - 500, playerY + 500)
+        console.log(`random:${randomX},${randomY}`)
+        hostileAlive[i] = add([sprite("64xTile"), area(),body(),pos(randomX, randomY),scale(0.5),offscreen({ destroy: false }),"hostile",{health: 100}])
+        console.log(hostileAlive[i].pos)
     }
 
     onClick(() => {
@@ -86,7 +101,6 @@ scene('game', () => {
 
     let damage = 20
     onCollide("projectile", "hostile", (projectile,hostile) => {
-        console.log(hostile.health)
         hostile.health -= damage
         destroy(projectile)
         if (hostile.health <= 0) {

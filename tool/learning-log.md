@@ -88,3 +88,6 @@ let add = (a,b) => a + b
 
 3/31
 * `scene('name',()=>{}` to make game menus such as start and game over
+
+4/5
+* used `move()` with `sub()` to make a sprite move toward the player
