@@ -28,12 +28,36 @@ scene('game', () => {
     let speed = 90
     let playerHealth = 100
 
+    const hpBarBackground = add([
+        pos(25, 20),
+        rect(130, 40),
+        outline(3),
+        fixed(),
+        color(255,255,255),
+        z(0),
+    ])
     const hpBar = add([
-        text(`Health:${playerHealth}`, {size: 24,}),
-        pos(player.pos.x-590, player.pos.y-400),
-        { value: health },
+        text(`Health:`, {size: 24,}),
+        pos(28,27),
+        fixed(),
+        color(0,0,0),
+        z(1),
+    ])
+    const HP = add([
+        text(`${playerHealth}`, {size: 24,}),
+        pos(105,27),
+        fixed(),
+        color(healthStatus(playerHealth)),
+        z(1),
+        { value: playerHealth },
     ])
 
+    function healthStatus(value) {
+        if (value >= 75) return GREEN
+        else if (value >= 50) return rgb(255,215,0)
+        else if (value >= 25) return rgb(255,140,0)
+        else return RED
+    }
     // wasd movement
     onKeyDown('w', () => {player.move(0, -speed)})
     onKeyDown('a', () => {player.move(-speed, 0)})
@@ -46,32 +70,24 @@ scene('game', () => {
         if (isKeyDown("shift")) speed = 120
         onKeyRelease("shift", () => {speed = 60})
 
-        hpBar.pos.x = player.pos.x-590
-        hpBar.pos.y = player.pos.y-400
-        hpBar.text = `Health:${playerHealth}`
-        hpBar.value = playerHealth
+        HP.text = playerHealth
+        HP.color = healthStatus(playerHealth)
+        HP.value = playerHealth
 
-        if (hpBar.value <= 0) {
-            const death = add([
-                text(`you died`, {size: 100,}),
-                pos(player.pos.x, player.pos.y),
-            ])
-            // speed = 0
-            // hpBar.value = -1000
-            // hpBar.text = "dead"
+        if (HP.value <= 0) {
             endGame()
         }
 
-        // hostileAlive.forEach(hostile => {
-        //     hostile.move(player.pos.sub(hostile.pos))
-        //     // console.log(hostile.pos)
-        // })
+        hostileAlive.forEach(hostile => {
+            hostile.move(player.pos.sub(hostile.pos))
+            // console.log(hostile.pos)
+        })
     })
 
 
 
     onKeyPress("space", () => {
-        playerHealth = 0
+        playerHealth -= 20
     })
 
     const rng = (min, max) => Math.floor(Math.random() * (max - min) + min)

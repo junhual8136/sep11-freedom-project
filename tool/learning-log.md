@@ -91,3 +91,4 @@ let add = (a,b) => a + b
 
 4/5
 * used `move()` with `sub()` to make a sprite move toward the player
+* `fixed()` makes something static/fixed to the screen
