@@ -2,6 +2,7 @@ import {loadMap} from './map.js'
 import {createStartMenu} from './start-menu.js'
 import {endGame} from './dead-menu.js'
 
+
 let gameWidth = 1200
 let gameHeight = 800
 
@@ -23,7 +24,7 @@ createStartMenu()
 scene('game', () => {
     loadMap()
 
-    const player = add([sprite("64xTile"), area(),body(),pos(200, 100),scale(0.5),"player"],)
+    const player = add([sprite("64xTile"), area(),body(),pos(gameWidth/2, gameHeight/2),scale(0.5),"player"],)
 
     let speed = 90
     let playerHealth = 100
@@ -86,9 +87,7 @@ scene('game', () => {
 
 
 
-    onKeyPress("space", () => {
-        playerHealth -= 20
-    })
+
 
     const rng = (min, max) => Math.floor(Math.random() * (max - min) + min)
     const hostileAlive = []
@@ -96,11 +95,11 @@ scene('game', () => {
         hostileAlive.push(`firstEnemy${i}`)
         const playerX = player.pos.x
         const playerY = player.pos.y
-        let randomX = rng(playerX - 500, playerX + 500)
-        let randomY = rng(playerY - 500, playerY + 500)
-        console.log(`random:${randomX},${randomY}`)
+        let randomX = rng(playerX - 750, playerX + 750)
+        let randomY = rng(playerY - 750, playerY + 750)
+        // console.log(`random:${randomX},${randomY}`)
         hostileAlive[i] = add([sprite("64xTile"), area(),body(),pos(randomX, randomY),scale(0.5),offscreen({ destroy: false }),"hostile",{health: 100}])
-        console.log(hostileAlive[i].pos)
+        // console.log(hostileAlive[i].pos)
     }
 
     onClick(() => {
@@ -121,6 +120,25 @@ scene('game', () => {
         destroy(projectile)
         if (hostile.health <= 0) {
             destroy(hostile)
+        }
+    })
+    let kb = 300
+    let hostileDamage = 5
+    onCollide("player","hostile", (player,hostile) => {
+        const takeCrit = rng(1,3) > 1 ? true : false
+        playerHealth -= hostileDamage
+
+        if (hostile.pos.x > player.pos.x) { // from right
+            player.move(-kb, 0)
+        }
+        else if (hostile.pos.x < player.pos.x) { // from left
+            player.move(kb, 0)
+        }
+        else if (hostile.pos.y > player.pos.x) { // from top
+            player.move(0, -kb)
+        }
+        else if (hostile.pos.y < player.pos.x) { // from bottom
+            player.move(0, kb)
         }
     })
 })
