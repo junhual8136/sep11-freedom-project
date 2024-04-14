@@ -29,6 +29,10 @@ scene('game', () => {
     let speed = 90
     let playerHealth = 100
 
+    setInterval(() => {
+        if (playerHealth < 100) playerHealth += 5
+    },5000)
+    
     const hpBarBackground = add([
         pos(25, 20),
         rect(130, 40),
@@ -125,8 +129,9 @@ scene('game', () => {
     let kb = 300
     let hostileDamage = 5
     onCollide("player","hostile", (player,hostile) => {
-        const takeCrit = rng(1,3) > 1 ? true : false
-        playerHealth -= hostileDamage
+        const takeCrit = rng(1,3) <= 1 ? true : false
+        if (takeCrit) playerHealth -= hostileDamage * 2
+        else playerHealth -= hostileDamage
 
         if (hostile.pos.x > player.pos.x) { // from right
             player.move(-kb, 0)
