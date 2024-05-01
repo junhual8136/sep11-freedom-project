@@ -1,5 +1,5 @@
 import { createStartMenu } from "./start-menu.js"
-import { gameHeight, gameWidth } from "./main.js"
+import { fpsDisplay, gameHeight, gameWidth } from "./main.js"
 
 
 function createButton(name,x,y,ignoreThis) {
@@ -23,6 +23,7 @@ function createButton(name,x,y,ignoreThis) {
 
 function endGame() {
     scene('end', () => {
+        fpsDisplay()
         const score = add([
             text("Dead", {
                 font: 'times-new-roman',

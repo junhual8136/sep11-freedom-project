@@ -1,9 +1,10 @@
 
-import {gameHeight, gameWidth} from './main.js'
+import {fpsDisplay, gameHeight, gameWidth} from './main.js'
 
 function createStartMenu() {
     scene('startMenu', () => {
         setBackground(Color.fromHex('#000000'))
+        fpsDisplay()
 
         const score = add([
             text("name to be decided", {
