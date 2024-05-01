@@ -110,6 +110,10 @@ scene('game', () => {
     onKeyDown('d', () => {player.move(speed, 0)})
     player.onUpdate(() => {camPos(player.pos )})
 
+    onKeyPress('r',() => {
+        if (currentSlot === 1)  amountLeft1 = 12
+        else if (currentSlot === 2) amountLeft2 = 4
+    })
     onKeyPress("1", () => {
         currentSlot = 1
         itemHolding = 'single'
@@ -145,7 +149,11 @@ scene('game', () => {
 
         hostileAlive.forEach(hostile => {
             hostile.move(player.pos.sub(hostile.pos))
-            // console.log(hostile.pos)
+            // const hostileHealth = add([
+            //     text(hostile.health,{size: 8}),
+            //     follow(hostile),
+            //     pos(0,0),
+            // ])
         })
     })
 
@@ -153,7 +161,7 @@ scene('game', () => {
     const rng = (min, max) => Math.floor(Math.random() * (max - min) + min)
     const hostileAlive = []
     function wave(number) {
-        for (let i=0;i<=number;i++) {
+        for (let i=0;i<number;i++) {
             const playerX = player.pos.x
             const playerY = player.pos.y
             let randomX = rng(playerX - 750, playerX + 750)
@@ -162,12 +170,19 @@ scene('game', () => {
             hostileAlive[i] = add([sprite("64xTile"), area(),body(),pos(randomX, randomY),scale(0.5),offscreen({ destroy: false }),"hostile",{health: 100}])
         }
     }
-    // wave(1 +4)
+    let gameTime = 0
+    setInterval(() => {
+        gameTime++
+        console.log(gameTime)
+        if (gameTime === 4) wave(3)
+    }, 1000);
 
     onClick(() => {
         if (currentSlot === 1) {
+            if (amountLeft1 <= 0) return
             shoot(0,0,250)
         } else if (currentSlot === 2) {
+            if (amountLeft2 <= 0) return
             threeShot(1000)
         }
     })
@@ -177,6 +192,7 @@ scene('game', () => {
     function shoot(xOffset,yOffset,timeout = 1) {
         if (cooldown) return
         add([sprite("64xTile"),pos(player.pos.x + xOffset,player.pos.y + yOffset),area(),scale(0.1),move(toWorld(mousePos()).sub(player.pos),1500),offscreen({ destroy: true }),"projectile",])
+        amountLeft1--
         cooldown = true
         setTimeout(() => {
             cooldown = false
@@ -187,6 +203,7 @@ scene('game', () => {
         add([sprite("64xTile"),pos(player.pos.x ,player.pos.y),area(),scale(0.1),move(toWorld(mousePos()).sub(player.pos),1500),offscreen({ destroy: true }),"projectile",])
         add([sprite("64xTile"),pos(player.pos.x + 25,player.pos.y + 25),area(),scale(0.1),move(toWorld(mousePos()).sub(player.pos),1500),offscreen({ destroy: true }),"projectile",])
         add([sprite("64xTile"),pos(player.pos.x + -25,player.pos.y + -25),area(),scale(0.1),move(toWorld(mousePos()).sub(player.pos),1500),offscreen({ destroy: true }),"projectile",])
+        amountLeft2--
         threeCooldown = true
         setTimeout(() => {
             threeCooldown = false
