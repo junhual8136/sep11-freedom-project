@@ -3,7 +3,7 @@ import {fpsDisplay, gameHeight, gameWidth} from './main.js'
 
 function createStartMenu() {
     scene('startMenu', () => {
-        setBackground(Color.fromHex('#000000'))
+        setBackground(Color.fromHex('#808080'))
         fpsDisplay()
 
         const score = add([

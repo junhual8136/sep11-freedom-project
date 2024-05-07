@@ -24,16 +24,18 @@ function fpsDisplay() {
      onUpdate(() => fps.text = debug.fps())
 }
 
-setBackground(Color.fromHex('#ADD8E6'))
 
 const grassTile16x = loadSprite("grass-tile-16", "assets/grass.png")
 const enemyTile = loadSprite("grass-tile-16", "assets/grass.png")
 const mainPlayer = loadSprite("64xTile", "assets/64xTile.png")
 
-// createStartMenu()
+createStartMenu()
 scene('game', () => {
     loadMap()
     fpsDisplay()
+    
+    setBackground(Color.fromHex('#ADD8E6'))
+
     const player = add([sprite("64xTile"), area(),body(),pos(gameWidth/2, gameHeight/2),scale(0.5),"player"],)
 
     let speed = 90
@@ -241,6 +243,5 @@ scene('game', () => {
 })
 
 
-go('game')
 export { grassTile16x, gameWidth, gameHeight, fpsDisplay }
 

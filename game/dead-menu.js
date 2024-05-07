@@ -24,6 +24,7 @@ function createButton(name,x,y,ignoreThis) {
 function endGame() {
     scene('end', () => {
         fpsDisplay()
+        setBackground(Color.fromHex('#808080'))
         const score = add([
             text("Dead", {
                 font: 'times-new-roman',

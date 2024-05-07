@@ -5,27 +5,22 @@ function loadMap() {
     const map = [
         // ground level
         addLevel([
-            "000000000000000000000000000000000000000000000000000000000000000000000000000000000",
-            "0ggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg0",
-            "0ggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg0",
-            "0ggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg0",
-            "0ggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg0",
-            "0ggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg0",
-            "0ggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg0",
-            "0ggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg0",
-            "0ggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg0",
-            "0ggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg0",
-            "0ggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg0",
-            "0ggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg0",
-            "0ggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg0",
-            "0ggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg0",
-            "0ggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg0",    
-            "000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+            "00000000000000000000000000000000000000000000000000000000000",
+            "0ggggggggggggggggggggggggggggggggggggggggggggggggggggggggg0",
+            "0ggggggggggggggggggggggggggggggggggggggggggggggggggggggggg0",
+            "0ggggggggggggggggggggggggggggggggggggggggggggggggggggggggg0",
+            "0ggggggggggggggggggggggggggggggggggggggggggggggggggggggggg0",
+            "0ggggggggggggggggggggggggggggggggggggggggggggggggggggggggg0",
+            "0ggggggggggggggggggggggggggggggggggggggggggggggggggggggggg0",
+            "0ggggggggggggggggggggggggggggggggggggggggggggggggggggggggg0",
+            "0ggggggggggggggggggggggggggggggggggggggggggggggggggggggggg0",
+            "0ggggggggggggggggggggggggggggggggggggggggggggggggggggggggg0",
+            "00000000000000000000000000000000000000000000000000000000000",
         ], {
-            tileWidth: 32,
-            tileHeight: 32,
+            tileWidth: 128,
+            tileHeight: 128,
             tiles: {
-                "g" : () => [sprite("grass-tile-16"),scale(4)],
+                "g" : () => [sprite("grass-tile-16"),scale(8)],
                 '0': () => [area({shape: new Rect(vec2(0), 16, 16)}),body({isStatic: true})],
 
             }
