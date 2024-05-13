@@ -12,7 +12,7 @@ function createStartMenu() {
                 size: 50,
             }),
             pos(gameWidth/6, 140),
-            color(RED),
+            color(BLACK),
         ])
 
         function createButton(name,x,y,ignoreThis) {

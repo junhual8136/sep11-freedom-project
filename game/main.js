@@ -33,7 +33,7 @@ createStartMenu()
 scene('game', () => {
     loadMap()
     fpsDisplay()
-    
+
     setBackground(Color.fromHex('#ADD8E6'))
 
     const player = add([sprite("64xTile"), area(),body(),pos(gameWidth/2, gameHeight/2),scale(0.5),"player"],)
@@ -125,6 +125,14 @@ scene('game', () => {
         currentSlot = 2
         itemHolding = 'triple'
         amountTotal = 4
+    })
+
+
+    // debugs
+    onKeyPress('p', () => {
+        if (!debug.inspect) debug.inspect = true
+        else if (debug.inspect) debug.inspect = false
+
     })
 
     onUpdate(() => {
@@ -220,7 +228,7 @@ scene('game', () => {
             destroy(hostile)
         }
     })
-    let kb = 300
+    let kb = 3200
     let hostileDamage = 5
     onCollide("player","hostile", (player,hostile) => {
         const takeCrit = rng(1,3) <= 1 ? true : false

@@ -5,23 +5,22 @@ function loadMap() {
     const map = [
         // ground level
         addLevel([
-            "00000000000000000000000000000000000000000000000000000000000",
-            "0ggggggggggggggggggggggggggggggggggggggggggggggggggggggggg0",
-            "0ggggggggggggggggggggggggggggggggggggggggggggggggggggggggg0",
-            "0ggggggggggggggggggggggggggggggggggggggggggggggggggggggggg0",
-            "0ggggggggggggggggggggggggggggggggggggggggggggggggggggggggg0",
-            "0ggggggggggggggggggggggggggggggggggggggggggggggggggggggggg0",
-            "0ggggggggggggggggggggggggggggggggggggggggggggggggggggggggg0",
-            "0ggggggggggggggggggggggggggggggggggggggggggggggggggggggggg0",
-            "0ggggggggggggggggggggggggggggggggggggggggggggggggggggggggg0",
-            "0ggggggggggggggggggggggggggggggggggggggggggggggggggggggggg0",
-            "00000000000000000000000000000000000000000000000000000000000",
+            "00000000000000000",
+            "0ggggggggggggggg0",
+            "0ggggggggggggggg0",
+            "0ggggggggggggggg0",
+            "0ggggggggggggggg0",
+            "0ggggggggggggggg0",
+            "0ggggggggggggggg0",
+            "0ggggggggggggggg0",
+            "0ggggggggggggggg0",
+            "00000000000000000",
         ], {
             tileWidth: 128,
             tileHeight: 128,
             tiles: {
                 "g" : () => [sprite("grass-tile-16"),scale(8)],
-                '0': () => [area({shape: new Rect(vec2(0), 16, 16)}),body({isStatic: true})],
+                '0': () => [area({shape: new Rect(vec2(0), 128, 128)}),body({isStatic: true})],
 
             }
         }),
