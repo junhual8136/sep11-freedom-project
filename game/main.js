@@ -46,7 +46,7 @@ scene('game', () => {
     },5000)
 
     const hpBarBackground = add([
-        pos(25, 20),
+        pos(gameWidth - 1175, gameHeight - 780),
         rect(130, 40),
         outline(3),
         fixed(),
@@ -55,14 +55,14 @@ scene('game', () => {
     ])
     const hpBar = add([
         text(`Health:`, {size: 24,}),
-        pos(28,27),
+        pos(gameWidth - 1172,gameHeight - 775),
         fixed(),
         color(0,0,0),
         z(1),
     ])
     const HP = add([
         text(`${playerHealth}`, {size: 24,}),
-        pos(105,27),
+        pos(gameWidth - 1095,gameHeight - 775),
         fixed(),
         color(healthStatus(playerHealth)),
         z(1),
@@ -79,32 +79,31 @@ scene('game', () => {
 
     let currentSlot = 1
     let itemHolding = 'single'
-    let amountTotal = 12
-    let amountLeft1 = 12
-    let amountLeft2 = 4
+    let amountLeft1 = 24
+    let amountLeft2 = 8
 
     const infoGUIBackground = add([
-        pos(25, 100),
-        rect(180, 90),
+        pos(25, gameHeight - 100),
+        rect(180, 50),
         outline(3),
         fixed(),
         color(255,255,255),
         z(0),
     ])
     const info = add([
-        text(`${itemHolding}`, {size: 24,}),
-        pos(50,105),
+        text(`${itemHolding}-${amountLeft1}`, {size: 24,}),
+        pos(50,gameHeight - 90),
         fixed(),
         color(0,0,0),
         z(1),
     ])
-    const info2 = add([
-        text(`${amountLeft1}/${amountTotal}`, {size: 24,}),
-        pos(50,140),
-        fixed(),
-        color(0,0,0),
-        z(1),
-    ])
+    // const info2 = add([
+    //     text(` - ${amountLeft1}`, {size: 24,}),
+    //     pos(120,105),
+    //     fixed(),
+    //     color(0,0,0),
+    //     z(1),
+    // ])
     // wasd movement
     onKeyDown('w', () => {player.move(0, -speed)})
     onKeyDown('a', () => {player.move(-speed, 0)})
@@ -112,19 +111,15 @@ scene('game', () => {
     onKeyDown('d', () => {player.move(speed, 0)})
     player.onUpdate(() => {camPos(player.pos )})
 
-    onKeyPress('r',() => {
-        if (currentSlot === 1)  amountLeft1 = 12
-        else if (currentSlot === 2) amountLeft2 = 4
-    })
     onKeyPress("1", () => {
         currentSlot = 1
         itemHolding = 'single'
-        amountTotal = 12
+        // amountTotal = 12
     })
     onKeyPress("2", () => {
         currentSlot = 2
         itemHolding = 'triple'
-        amountTotal = 4
+        // amountTotal = 4
     })
 
 
@@ -152,18 +147,13 @@ scene('game', () => {
         info.text = itemHolding
 
         if (currentSlot === 1) {
-            info2.text = `${amountLeft1}/${amountTotal}`
+            info.text = `${itemHolding} - ${amountLeft1}`
         } else if (currentSlot === 2) {
-            info2.text = `${amountLeft2}/${amountTotal}`
+            info.text = `${itemHolding} - ${amountLeft2}`
         }
 
         hostileAlive.forEach(hostile => {
             hostile.move(player.pos.sub(hostile.pos))
-            // const hostileHealth = add([
-            //     text(hostile.health,{size: 8}),
-            //     follow(hostile),
-            //     pos(0,0),
-            // ])
         })
     })
 
