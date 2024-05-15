@@ -81,6 +81,7 @@ scene('game', () => {
     let itemHolding = 'single'
     let amountLeft1 = 24
     let amountLeft2 = 8
+    let amountLeft3 = 60
 
     const infoGUIBackground = add([
         pos(25, gameHeight - 100),
@@ -114,12 +115,14 @@ scene('game', () => {
     onKeyPress("1", () => {
         currentSlot = 1
         itemHolding = 'single'
-        // amountTotal = 12
     })
     onKeyPress("2", () => {
         currentSlot = 2
         itemHolding = 'triple'
-        // amountTotal = 4
+    })
+    onKeyPress("3", () => {
+        currentSlot = 3
+        itemHolding = 'auto'
     })
 
 
@@ -150,7 +153,10 @@ scene('game', () => {
             info.text = `${itemHolding} - ${amountLeft1}`
         } else if (currentSlot === 2) {
             info.text = `${itemHolding} - ${amountLeft2}`
+        } else if (currentSlot === 3) {
+            info.text = `${itemHolding} - ${amountLeft3}`
         }
+
 
         hostileAlive.forEach(hostile => {
             hostile.move(player.pos.sub(hostile.pos))
@@ -184,6 +190,13 @@ scene('game', () => {
         } else if (currentSlot === 2) {
             if (amountLeft2 <= 0) return
             threeShot(1000)
+        }
+    })
+    onMouseDown(() => {
+        if (currentSlot === 3) {
+            if (amountLeft3 <= 0) return
+            shoot(0,0,200)
+            amountLeft3--
         }
     })
 
