@@ -176,6 +176,8 @@ scene('game', () => {
             hostileAlive[i] = add([sprite("64xTile"), area(),body(),pos(randomX, randomY),scale(0.5),offscreen({ destroy: false }),"hostile",{health: 100}])
         }
     }
+
+
     let gameTime = 0
     setInterval(() => {
         gameTime++
@@ -205,7 +207,8 @@ scene('game', () => {
     function shoot(xOffset,yOffset,timeout = 1) {
         if (cooldown) return
         add([sprite("64xTile"),pos(player.pos.x + xOffset,player.pos.y + yOffset),area(),scale(0.1),move(toWorld(mousePos()).sub(player.pos),1500),offscreen({ destroy: true }),"projectile",])
-        amountLeft1--
+        if (currentSlot === 1) amountLeft1--
+        else if (currentSlot === 3) amountLeft3--
         cooldown = true
         setTimeout(() => {
             cooldown = false
@@ -224,13 +227,19 @@ scene('game', () => {
     }
 
     let damage = 20
+    const drops = []
     onCollide("projectile", "hostile", (projectile,hostile) => {
         hostile.health -= damage
         destroy(projectile)
         if (hostile.health <= 0) {
+            drops.push(add([sprite("64xTile"), area(),body(),pos(hostile.x,hostile.y),scale(0.5),"drop"]))
             destroy(hostile)
         }
     })
+    onCollide('player','drop', (player,drop) => {
+
+    })
+    
     let kb = 3200
     let hostileDamage = 5
     onCollide("player","hostile", (player,hostile) => {
