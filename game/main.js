@@ -1,6 +1,7 @@
 import {loadMap} from './map.js'
 import {createStartMenu} from './start-menu.js'
 import {endGame} from './dead-menu.js'
+import {loadSprites} from './load.js'
 
 
 let gameWidth = 1200
@@ -12,6 +13,8 @@ kaboom({
     font: "sans-serif",
     maxFPS: 144
 })
+
+loadSprites()
 
 function fpsDisplay() {
     const fps = add([
@@ -25,9 +28,9 @@ function fpsDisplay() {
 }
 
 
-const grassTile16x = loadSprite("grass-tile-16", "assets/grass.png")
-const enemyTile = loadSprite("grass-tile-16", "assets/grass.png")
-const mainPlayer = loadSprite("64xTile", "assets/64xTile.png")
+// const grassTile16x = loadSprite("grass-tile-16", "assets/grass.png")
+// const enemyTile = loadSprite("grass-tile-16", "assets/grass.png")
+// const mainPlayer = loadSprite("64xTile", "assets/64xTile.png")
 
 createStartMenu()
 scene('game', () => {
@@ -36,7 +39,7 @@ scene('game', () => {
 
     setBackground(Color.fromHex('#ADD8E6'))
 
-    const player = add([sprite("64xTile"), area(),body(),pos(gameWidth/2, gameHeight/2),scale(0.5),"player"],)
+    const player = add([sprite("64xTile"), area(),body(),pos(750, 600),scale(0.5),"player"],)
 
     let speed = 90
     let playerHealth = 100
@@ -98,6 +101,7 @@ scene('game', () => {
         color(0,0,0),
         z(1),
     ])
+
     // const info2 = add([
     //     text(` - ${amountLeft1}`, {size: 24,}),
     //     pos(120,105),
@@ -148,6 +152,7 @@ scene('game', () => {
         }
 
         info.text = itemHolding
+        waveInfo.text = `Current Wave: ${currentWave} / Eniemes Alive: ${hostileAlive.length}`
 
         if (currentSlot === 1) {
             info.text = `${itemHolding} - ${amountLeft1}`
@@ -158,9 +163,15 @@ scene('game', () => {
         }
 
 
-        hostileAlive.forEach(hostile => {
+        hostileAlive.forEach((hostile,index) => {
             hostile.move(player.pos.sub(hostile.pos))
+            let alive = true
+            if (hostile.health <= 0) {
+                hostileAlive.splice(index,1)
+            }
         })
+
+
     })
 
 
@@ -170,20 +181,46 @@ scene('game', () => {
         for (let i=0;i<number;i++) {
             const playerX = player.pos.x
             const playerY = player.pos.y
-            let randomX = rng(playerX - 750, playerX + 750)
-            let randomY = rng(playerY - 750, playerY + 750)
+            let [randomX,randomY] = [rng(200,800),rng(200,800)]
+
             // console.log(`random:${randomX},${randomY}`)
-            hostileAlive[i] = add([sprite("64xTile"), area(),body(),pos(randomX, randomY),scale(0.5),offscreen({ destroy: false }),"hostile",{health: 100}])
+            hostileAlive.push(add([sprite("64xTile"), area(),body(),pos(randomX, randomY),scale(0.5),offscreen({ destroy: false }),"hostile",{health: 100}]))
         }
     }
 
 
-    let gameTime = 0
-    setInterval(() => {
+   let gameTime = 0
+   let currentWave = 0
+   let spawnCooldown = false
+   setInterval(() => {
         gameTime++
-        console.log(gameTime)
-        if (gameTime === 4) wave(3)
-    }, 1000);
+        if (gameTime === 4) {
+            wave(4)
+            currentWave++
+            return
+        }
+        if (hostileAlive.length === 0 && gameTime > 10) {
+            if (!spawnCooldown) {
+                setTimeout(() => {
+                    wave(4 + 2 * currentWave)
+                    currentWave++
+                }, 3000);
+                spawnCooldown = true
+                setTimeout(() => {
+                    spawnCooldown = false
+                }, 4000);
+            }
+
+        }
+   }, 1000);
+
+   const waveInfo = add([
+    text(`Current Wave: ${currentWave} / Eniemes Alive: ${hostileAlive.length}`, {size: 24,}),
+    pos(gameWidth/2 - 100,30),
+    fixed(),
+    color(0,0,0),
+    z(1),
+    ])
 
     onClick(() => {
         if (currentSlot === 1) {
@@ -197,8 +234,7 @@ scene('game', () => {
     onMouseDown(() => {
         if (currentSlot === 3) {
             if (amountLeft3 <= 0) return
-            shoot(0,0,200)
-            amountLeft3--
+            shootAuto(0,0,200)
         }
     })
 
@@ -207,8 +243,7 @@ scene('game', () => {
     function shoot(xOffset,yOffset,timeout = 1) {
         if (cooldown) return
         add([sprite("64xTile"),pos(player.pos.x + xOffset,player.pos.y + yOffset),area(),scale(0.1),move(toWorld(mousePos()).sub(player.pos),1500),offscreen({ destroy: true }),"projectile",])
-        if (currentSlot === 1) amountLeft1--
-        else if (currentSlot === 3) amountLeft3--
+         amountLeft1--
         cooldown = true
         setTimeout(() => {
             cooldown = false
@@ -225,21 +260,32 @@ scene('game', () => {
             threeCooldown = false
         }, timeout)
     }
-
+    function shootAuto(xOffset,yOffset,timeout = 1) {
+        if (cooldown) return
+        add([sprite("64xTile"),pos(player.pos.x + xOffset,player.pos.y + yOffset),area(),scale(0.1),move(toWorld(mousePos()).sub(player.pos),1500),offscreen({ destroy: true }),"projectile",])
+        amountLeft3--
+        cooldown = true
+        setTimeout(() => {
+            cooldown = false
+        }, timeout)
+    }
     let damage = 20
     const drops = []
     onCollide("projectile", "hostile", (projectile,hostile) => {
         hostile.health -= damage
         destroy(projectile)
         if (hostile.health <= 0) {
-            drops.push(add([sprite("64xTile"), area(),body(),pos(hostile.x,hostile.y),scale(0.5),"drop"]))
+            drops.push({
+                xCoordinate: hostile.x,
+                yCoordinate: hostile.y
+            })
             destroy(hostile)
         }
     })
     onCollide('player','drop', (player,drop) => {
 
     })
-    
+
     let kb = 3200
     let hostileDamage = 5
     onCollide("player","hostile", (player,hostile) => {
@@ -263,5 +309,5 @@ scene('game', () => {
 })
 
 
-export { grassTile16x, gameWidth, gameHeight, fpsDisplay }
+export { gameWidth, gameHeight, fpsDisplay }
 

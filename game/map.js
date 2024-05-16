@@ -1,5 +1,5 @@
-import {grassTile16x} from './main.js'
-
+// import {grassTile16x} from './main.js'
+import { loadSprites } from "./load.js"
 
 function loadMap() {
     const map = [
