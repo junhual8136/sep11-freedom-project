@@ -270,19 +270,35 @@ scene('game', () => {
         }, timeout)
     }
     let damage = 20
-    const drops = []
+    let hostileKB = -2000
+    let drops = []
     onCollide("projectile", "hostile", (projectile,hostile) => {
         hostile.health -= damage
         destroy(projectile)
+        if (hostile.pos.x > projectile.pos.x) { // from right
+            hostile.move(-hostileKB, 0)
+        }
+        else if (hostile.pos.x < projectile.pos.x) { // from left
+            hostile.move(hostileKB, 0)
+        }
+        else if (hostile.pos.y > projectile.pos.x) { // from top
+            hostile.move(0, -hostileKB)
+        }
+        else if (hostile.pos.y < projectile.pos.x) { // from bottom
+            hostile.move(0, hostileKB)
+        }
         if (hostile.health <= 0) {
-            drops.push({
-                xCoordinate: hostile.x,
-                yCoordinate: hostile.y
-            })
+            add([sprite("64xTile"),pos(hostile.pos.x,hostile.pos.y),area(),scale(0.2),"drop",])
             destroy(hostile)
         }
     })
+
+
     onCollide('player','drop', (player,drop) => {
+        amountLeft1 += 5
+        amountLeft2 += 2
+        amountLeft3 += 10
+        destroy(drop)
 
     })
 
