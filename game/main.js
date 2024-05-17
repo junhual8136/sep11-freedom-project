@@ -19,7 +19,7 @@ loadSprites()
 function fpsDisplay() {
     const fps = add([
         text(`${debug.fps()}`, {size: 24,}),
-        pos(gameWidth - 30,15),
+        pos(gameWidth - 35,15),
         color(0,255,0),
         fixed(),
         z(1),
@@ -119,14 +119,20 @@ scene('game', () => {
     onKeyPress("1", () => {
         currentSlot = 1
         itemHolding = 'single'
+        damage = 20
+        hostileKB = 2000
     })
     onKeyPress("2", () => {
         currentSlot = 2
         itemHolding = 'triple'
+        damage = 40
+        hostileKB = 3500
     })
     onKeyPress("3", () => {
         currentSlot = 3
         itemHolding = 'auto'
+        damage = 20
+        hostileKB = 2000
     })
 
 
@@ -192,6 +198,8 @@ scene('game', () => {
    let gameTime = 0
    let currentWave = 0
    let spawnCooldown = false
+   let drops = []
+
    setInterval(() => {
         gameTime++
         if (gameTime === 4) {
@@ -204,6 +212,12 @@ scene('game', () => {
                 setTimeout(() => {
                     wave(4 + 2 * currentWave)
                     currentWave++
+                    drops.forEach((element,index)=> {
+                        setTimeout(() => {
+                            destroy(element)
+                            drops.splice(index,1)
+                        }, 3000);
+                    });
                 }, 3000);
                 spawnCooldown = true
                 setTimeout(() => {
@@ -216,7 +230,7 @@ scene('game', () => {
 
    const waveInfo = add([
     text(`Current Wave: ${currentWave} / Eniemes Alive: ${hostileAlive.length}`, {size: 24,}),
-    pos(gameWidth/2 - 100,30),
+    pos(gameWidth/2 - 150,30),
     fixed(),
     color(0,0,0),
     z(1),
@@ -270,25 +284,23 @@ scene('game', () => {
         }, timeout)
     }
     let damage = 20
-    let hostileKB = -2000
-    let drops = []
     onCollide("projectile", "hostile", (projectile,hostile) => {
         hostile.health -= damage
         destroy(projectile)
         if (hostile.pos.x > projectile.pos.x) { // from right
-            hostile.move(-hostileKB, 0)
-        }
-        else if (hostile.pos.x < projectile.pos.x) { // from left
             hostile.move(hostileKB, 0)
         }
-        else if (hostile.pos.y > projectile.pos.x) { // from top
-            hostile.move(0, -hostileKB)
+        else if (hostile.pos.x < projectile.pos.x) { // from left
+            hostile.move(-hostileKB, 0)
         }
-        else if (hostile.pos.y < projectile.pos.x) { // from bottom
+        else if (hostile.pos.y > projectile.pos.x) { // from top
             hostile.move(0, hostileKB)
         }
+        else if (hostile.pos.y < projectile.pos.x) { // from bottom
+            hostile.move(0, -hostileKB)
+        }
         if (hostile.health <= 0) {
-            add([sprite("64xTile"),pos(hostile.pos.x,hostile.pos.y),area(),scale(0.2),"drop",])
+            drops.push(add([sprite("64xTile"),pos(hostile.pos.x,hostile.pos.y),area(),scale(0.2),"drop",]))
             destroy(hostile)
         }
     })
@@ -301,7 +313,7 @@ scene('game', () => {
         destroy(drop)
 
     })
-
+    let hostileKB = -2000
     let kb = 3200
     let hostileDamage = 5
     onCollide("player","hostile", (player,hostile) => {
