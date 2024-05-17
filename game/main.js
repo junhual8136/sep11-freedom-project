@@ -1,5 +1,5 @@
 import {loadMap} from './map.js'
-import {createStartMenu,createButton} from './start-menu.js'
+import {createStartMenu,createButton,moveUp, moveLeft, moveDown, moveRight, changeToSlot1, changeToSlot2, changeToSlot3} from './start-menu.js'
 import {endGame} from './dead-menu.js'
 import {loadSprites} from './load.js'
 
@@ -7,6 +7,7 @@ import {loadSprites} from './load.js'
 let gameWidth = 1200
 let gameHeight = 800
 let paused = false
+
 
 kaboom({
     width: gameWidth,
@@ -28,10 +29,40 @@ function fpsDisplay() {
      onUpdate(() => fps.text = debug.fps())
 }
 
+function createMainButton(name,x,y,ignoreThis) {
 
-// const grassTile16x = loadSprite("grass-tile-16", "assets/grass.png")
-// const enemyTile = loadSprite("grass-tile-16", "assets/grass.png")
-// const mainPlayer = loadSprite("64xTile", "assets/64xTile.png")
+    const mainButton = add([
+        rect(240, 80, { radius: 32 }),
+        color(0,0,0),
+        opacity(0.7),
+        pos(x,y),
+        outline(1),
+        area(),
+        scale(1),
+        anchor("center"),
+        fixed(),
+        z(2),
+    ])
+    mainButton.add([
+        text(name),
+        anchor("center"),
+        color(255, 255, 255),
+        fixed(),
+    ])
+    mainButton.onHoverUpdate(() => {
+        mainButton.outline.width = 4
+        mainButton.outline.color = WHITE
+
+    })
+    mainButton.onHoverEnd(() => {
+        mainButton.outline.width = 0
+        mainButton.outline.color = BLACK
+    })
+    mainButton.onClick(ignoreThis)
+
+    return mainButton
+}
+
 
 createStartMenu()
 scene('game', () => {
@@ -49,25 +80,20 @@ scene('game', () => {
         if (paused) return
         if (playerHealth < 100) playerHealth += 5
     },5000)
-
-    const hpBarBackground = add([
-        pos(gameWidth - 1175, gameHeight - 780),
-        rect(130, 40),
-        outline(3),
+    const backgroundHP = add([
+        pos(50, 50),
+        rect(55, 60, {radius: 4}),
+        anchor("center"),
+        outline(1),
         fixed(),
-        color(255,255,255),
-        z(0),
-    ])
-    const hpBar = add([
-        text(`Health:`, {size: 24,}),
-        pos(gameWidth - 1172,gameHeight - 775),
-        fixed(),
+        opacity(0.8),
         color(0,0,0),
-        z(1),
+        z(0),
     ])
     const HP = add([
         text(`${playerHealth}`, {size: 24,}),
-        pos(gameWidth - 1095,gameHeight - 775),
+        pos(50, 50),
+        anchor("center"),
         fixed(),
         color(healthStatus(playerHealth)),
         z(1),
@@ -83,26 +109,29 @@ scene('game', () => {
 
 
     let currentSlot = 1
-    let itemHolding = 'single'
     let amountLeft1 = 24
     let amountLeft2 = 8
     let amountLeft3 = 60
 
-    const infoGUIBackground = add([
-        pos(25, gameHeight - 100),
-        rect(180, 50),
-        outline(3),
-        fixed(),
-        color(255,255,255),
-        z(0),
+    const slot1 =  add([
+        pos(120, 50),rect(50, 50, {radius: 8}),anchor("center"), outline(1),fixed(),opacity(0.6),color(0,0,0),z(0),
     ])
-    const info = add([
-        text(`${itemHolding}-${amountLeft1}`, {size: 24,}),
-        pos(50,gameHeight - 90),
-        fixed(),
-        color(0,0,0),
-        z(1),
+    const slot2 = add([
+        pos(180, 50),rect(50, 50, {radius: 8}),anchor("center"), outline(1),fixed(),opacity(0.6),color(0,0,0),z(0),
     ])
+    const slot3 = add([
+        pos(240, 50),rect(50, 50, {radius: 8}),anchor("center"), outline(1),fixed(),opacity(0.6),color(0,0,0),z(0),
+    ])
+    const slot1Text = add([
+        text(amountLeft1,{size:18}),pos(slot1.pos.x + 5, slot1.pos.y + 10),color(255,255,255),z(1),fixed(),
+    ])
+    const slot2Text = add([
+        text(amountLeft2,{size:18}),pos(slot2.pos.x + 5, slot2.pos.y + 10),color(255,255,255),z(1),fixed(),
+    ])
+    const slot3Text = add([
+        text(amountLeft3,{size:18}),pos(slot3.pos.x + 5, slot3.pos.y + 10),color(255,255,255),z(1),fixed(),
+    ])
+
 
     let menuOpen = false
 
@@ -111,23 +140,24 @@ scene('game', () => {
         rect(400, 450, {radius: 12}),
         outline(2),
         fixed(),
-        color(255,255,255),
+        color(0,0,0),
+        opacity(0.4),
         z(1),
     ])
     const menuText = add([
         text(`MENU`, {size: 40,}),
         pos(gameWidth/2-65,gameHeight/6 + 50),
         fixed(),
-        color(0,0,0),
+        color(255,255,255),
         z(3),
     ])
-    const goToStartMenu = createButton('Start Menu',gameWidth/2,gameHeight/3 + 190, () => {
+    const goToStartMenu = createMainButton('Start Menu',gameWidth/2,gameHeight/3 + 190, () => {
         if (!goToStartMenu.hidden) {
             go('startMenu')
         }
 
     })
-    const resumeButton = createButton('resume',gameWidth/2,gameHeight/3 + 60, () => {
+    const resumeButton = createMainButton('resume',gameWidth/2,gameHeight/3 + 60, () => {
         if (!resumeButton.hidden) {
             menuBG.hidden = true
             menuText.hidden = true
@@ -135,6 +165,7 @@ scene('game', () => {
             goToStartMenu.hidden = true
             menuOpen = false
             paused = false
+            speed = 60
         }
     })
     menuBG.hidden = true
@@ -145,29 +176,47 @@ scene('game', () => {
 
 
     // wasd movement
-    onKeyDown('w', () => {player.move(0, -speed)})
-    onKeyDown('a', () => {player.move(-speed, 0)})
-    onKeyDown('s', () => {player.move(0, speed)})
-    onKeyDown('d', () => {player.move(speed, 0)})
+    onKeyDown(moveUp, () => {player.move(0, -speed)})
+    onKeyDown(moveLeft, () => {player.move(-speed, 0)})
+    onKeyDown(moveDown, () => {player.move(0, speed)})
+    onKeyDown(moveRight, () => {player.move(speed, 0)})
     player.onUpdate(() => {camPos(player.pos )})
 
-    onKeyPress("1", () => {
+    onKeyPress(changeToSlot1, () => {
         currentSlot = 1
-        itemHolding = 'single'
         damage = 20
         hostileKB = 2000
+        slot1.outline.width = 4
+        slot1.outline.color = WHITE
+
+        slot2.outline.width = 0
+        slot2.outline.color = BLACK
+        slot3.outline.width = 0
+        slot3.outline.color = BLACK
     })
-    onKeyPress("2", () => {
+    onKeyPress(changeToSlot2, () => {
         currentSlot = 2
-        itemHolding = 'triple'
         damage = 40
         hostileKB = 3500
+        slot2.outline.width = 4
+        slot2.outline.color = WHITE
+
+        slot1.outline.width = 0
+        slot1.outline.color = BLACK
+        slot3.outline.width = 0
+        slot3.outline.color = BLACK
     })
-    onKeyPress("3", () => {
+    onKeyPress(changeToSlot3, () => {
         currentSlot = 3
-        itemHolding = 'auto'
         damage = 20
         hostileKB = 2000
+        slot3.outline.width = 4
+        slot3.outline.color = WHITE
+
+        slot1.outline.width = 0
+        slot1.outline.color = BLACK
+        slot2.outline.width = 0
+        slot2.outline.color = BLACK
     })
 
 
@@ -179,17 +228,10 @@ scene('game', () => {
             goToStartMenu.hidden = false
             menuOpen = true
             paused = true
-            console.log(menuOpen)
+            speed = 0
+
         }
-        else if (menuOpen) {
-            menuBG.hidden = true
-            menuText.hidden = true
-            resumeButton.hidden = true
-            goToStartMenu.hidden = true
-            menuOpen = false
-            paused = false
-            console.log(menuOpen)
-        }
+
     })
 
     // debugs
@@ -200,6 +242,7 @@ scene('game', () => {
     })
 
     onUpdate(() => {
+        if (paused) return
         // shift to run (2x speed)
         if (isKeyDown("shift")) speed = 120
         onKeyRelease("shift", () => {speed = 60})
@@ -208,21 +251,18 @@ scene('game', () => {
         HP.color = healthStatus(playerHealth)
         HP.value = playerHealth
 
-        // fps.text = debug.fps()
+
         if (HP.value <= 0) {
             endGame()
         }
 
-        info.text = itemHolding
+
         waveInfo.text = `Current Wave: ${currentWave} / Eniemes Alive: ${hostileAlive.length}`
 
-        if (currentSlot === 1) {
-            info.text = `${itemHolding} - ${amountLeft1}`
-        } else if (currentSlot === 2) {
-            info.text = `${itemHolding} - ${amountLeft2}`
-        } else if (currentSlot === 3) {
-            info.text = `${itemHolding} - ${amountLeft3}`
-        }
+        slot1Text.text = amountLeft1
+        slot2Text.text = amountLeft2
+        slot3Text.text = amountLeft3
+
 
         if (!paused) {
             hostileAlive.forEach((hostile,index) => {
@@ -233,8 +273,6 @@ scene('game', () => {
                 }
             })
         }
-
-
     })
 
 
@@ -258,8 +296,10 @@ scene('game', () => {
    let drops = []
 
    setInterval(() => {
-        gameTime++
-        if (gameTime === 4) {
+        if (!paused) {
+            gameTime++
+        }
+        if (gameTime === 4 && !paused) {
             wave(4)
             currentWave++
             return
@@ -275,7 +315,7 @@ scene('game', () => {
                             drops.splice(index,1)
                         }, 3000);
                     });
-                }, 3000);
+                }, 2000);
                 spawnCooldown = true
                 setTimeout(() => {
                     spawnCooldown = false
