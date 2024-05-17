@@ -287,12 +287,17 @@ scene('game', () => {
     const hostileAlive = []
     function wave(number) {
         for (let i=0;i<number;i++) {
+            const explosive = rng(1,10)
             const playerX = player.pos.x
             const playerY = player.pos.y
             let [randomX,randomY] = [rng(200,800),rng(200,800)]
 
             // console.log(`random:${randomX},${randomY}`)
+            if (explosive === 1) {
+                hostileAlive.push(add([sprite("64xTile"), area(),body(),pos(randomX, randomY),scale(0.75),offscreen({ destroy: false }),"hostile","explosive",{health: 100}]))
+            } else {
             hostileAlive.push(add([sprite("64xTile"), area(),body(),pos(randomX, randomY),scale(0.5),offscreen({ destroy: false }),"hostile",{health: 100}]))
+            }
         }
     }
 
@@ -413,6 +418,16 @@ scene('game', () => {
         }
     })
 
+    const blastLocations = []
+    onCollide("projectile", "explosive", (projectile,explosive) => {
+        if (explosive.health <=0) {
+            explode(explosive.pos.x,explosive.pos.y)
+        }
+    })
+
+    function explode(x,y) {
+        //todo later
+    }
 
     onCollide('player','drop', (player,drop) => {
         amountLeft1 += 5
