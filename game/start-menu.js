@@ -9,6 +9,7 @@ let changeToSlot1 = 1
 let changeToSlot2 = 2
 let changeToSlot3 = 3
 
+
 function createButton(name,x,y,ignoreThis) {
     const startButton = add([
         rect(240, 80, { radius: 8 }),
@@ -110,7 +111,7 @@ function createStartMenu() {
                 z(2),
             ])
             popUpBG.add([
-                text('Press a key', {size: 40}),
+                text('Press a key \n ESC to return', {size: 40}),
                 anchor('center'),
                 color(0,0,0)
             ])
@@ -138,6 +139,10 @@ function createStartMenu() {
                 else if (variable == changeToSlot3) {
                     changeToSlot3 = ch
                 }
+                destroy(popUpBG)
+                getKeyPressed = false
+            })
+            onKeyPress("escape", () => {
                 destroy(popUpBG)
                 getKeyPressed = false
 

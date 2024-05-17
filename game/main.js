@@ -75,6 +75,7 @@ scene('game', () => {
 
     let speed = 90
     let playerHealth = 100
+    paused = false
 
     setInterval(() => {
         if (paused) return
@@ -154,6 +155,7 @@ scene('game', () => {
     const goToStartMenu = createMainButton('Start Menu',gameWidth/2,gameHeight/3 + 190, () => {
         if (!goToStartMenu.hidden) {
             go('startMenu')
+
         }
 
     })
@@ -182,7 +184,9 @@ scene('game', () => {
     onKeyDown(moveRight, () => {player.move(speed, 0)})
     player.onUpdate(() => {camPos(player.pos )})
 
-    onKeyPress(changeToSlot1, () => {
+    onKeyPress(changeToSlot1.toString(), () => {
+        console.log(`switched to ${currentSlot}`)
+
         currentSlot = 1
         damage = 20
         hostileKB = 2000
@@ -194,7 +198,9 @@ scene('game', () => {
         slot3.outline.width = 0
         slot3.outline.color = BLACK
     })
-    onKeyPress(changeToSlot2, () => {
+    onKeyPress(changeToSlot2.toString(), () => {
+        console.log(`switched to ${currentSlot}`)
+
         currentSlot = 2
         damage = 40
         hostileKB = 3500
@@ -206,7 +212,8 @@ scene('game', () => {
         slot3.outline.width = 0
         slot3.outline.color = BLACK
     })
-    onKeyPress(changeToSlot3, () => {
+    onKeyPress(changeToSlot3.toString(), () => {
+        console.log(`switched to ${currentSlot}`)
         currentSlot = 3
         damage = 20
         hostileKB = 2000
@@ -313,7 +320,7 @@ scene('game', () => {
                         setTimeout(() => {
                             destroy(element)
                             drops.splice(index,1)
-                        }, 3000);
+                        }, 5000);
                     });
                 }, 2000);
                 spawnCooldown = true
