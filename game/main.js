@@ -1,11 +1,12 @@
 import {loadMap} from './map.js'
-import {createStartMenu} from './start-menu.js'
+import {createStartMenu,createButton} from './start-menu.js'
 import {endGame} from './dead-menu.js'
 import {loadSprites} from './load.js'
 
 
 let gameWidth = 1200
 let gameHeight = 800
+let paused = false
 
 kaboom({
     width: gameWidth,
@@ -19,7 +20,7 @@ loadSprites()
 function fpsDisplay() {
     const fps = add([
         text(`${debug.fps()}`, {size: 24,}),
-        pos(gameWidth - 35,15),
+        pos(gameWidth - 40,15),
         color(0,255,0),
         fixed(),
         z(1),
@@ -45,6 +46,7 @@ scene('game', () => {
     let playerHealth = 100
 
     setInterval(() => {
+        if (paused) return
         if (playerHealth < 100) playerHealth += 5
     },5000)
 
@@ -102,13 +104,46 @@ scene('game', () => {
         z(1),
     ])
 
-    // const info2 = add([
-    //     text(` - ${amountLeft1}`, {size: 24,}),
-    //     pos(120,105),
-    //     fixed(),
-    //     color(0,0,0),
-    //     z(1),
-    // ])
+    let menuOpen = false
+
+    const menuBG = add([
+        pos(gameWidth/2 - 200, gameHeight/5),
+        rect(400, 450, {radius: 12}),
+        outline(2),
+        fixed(),
+        color(255,255,255),
+        z(1),
+    ])
+    const menuText = add([
+        text(`MENU`, {size: 40,}),
+        pos(gameWidth/2-65,gameHeight/6 + 50),
+        fixed(),
+        color(0,0,0),
+        z(3),
+    ])
+    const goToStartMenu = createButton('Start Menu',gameWidth/2,gameHeight/3 + 190, () => {
+        if (!goToStartMenu.hidden) {
+            go('startMenu')
+        }
+
+    })
+    const resumeButton = createButton('resume',gameWidth/2,gameHeight/3 + 60, () => {
+        if (!resumeButton.hidden) {
+            menuBG.hidden = true
+            menuText.hidden = true
+            resumeButton.hidden = true
+            goToStartMenu.hidden = true
+            menuOpen = false
+            paused = false
+        }
+    })
+    menuBG.hidden = true
+    menuText.hidden = true
+    resumeButton.hidden = true
+    goToStartMenu.hidden = true
+
+
+
     // wasd movement
     onKeyDown('w', () => {player.move(0, -speed)})
     onKeyDown('a', () => {player.move(-speed, 0)})
@@ -135,6 +170,27 @@ scene('game', () => {
         hostileKB = 2000
     })
 
+
+    onKeyPress('escape', () => {
+        if (!menuOpen) {
+            menuBG.hidden = false
+            menuText.hidden = false
+            resumeButton.hidden = false
+            goToStartMenu.hidden = false
+            menuOpen = true
+            paused = true
+            console.log(menuOpen)
+        }
+        else if (menuOpen) {
+            menuBG.hidden = true
+            menuText.hidden = true
+            resumeButton.hidden = true
+            goToStartMenu.hidden = true
+            menuOpen = false
+            paused = false
+            console.log(menuOpen)
+        }
+    })
 
     // debugs
     onKeyPress('p', () => {
@@ -168,14 +224,15 @@ scene('game', () => {
             info.text = `${itemHolding} - ${amountLeft3}`
         }
 
-
-        hostileAlive.forEach((hostile,index) => {
-            hostile.move(player.pos.sub(hostile.pos))
-            let alive = true
-            if (hostile.health <= 0) {
-                hostileAlive.splice(index,1)
-            }
-        })
+        if (!paused) {
+            hostileAlive.forEach((hostile,index) => {
+                hostile.move(player.pos.sub(hostile.pos))
+                let alive = true
+                if (hostile.health <= 0) {
+                    hostileAlive.splice(index,1)
+                }
+            })
+        }
 
 
     })
@@ -237,18 +294,22 @@ scene('game', () => {
     ])
 
     onClick(() => {
-        if (currentSlot === 1) {
-            if (amountLeft1 <= 0) return
-            shoot(0,0,250)
-        } else if (currentSlot === 2) {
-            if (amountLeft2 <= 0) return
-            threeShot(1000)
+        if (!paused) {
+            if (currentSlot === 1) {
+                if (amountLeft1 <= 0) return
+                shoot(0,0,250)
+            } else if (currentSlot === 2) {
+                if (amountLeft2 <= 0) return
+                threeShot(1000)
+            }
         }
     })
     onMouseDown(() => {
-        if (currentSlot === 3) {
-            if (amountLeft3 <= 0) return
-            shootAuto(0,0,200)
+        if (!paused) {
+            if (currentSlot === 3) {
+                if (amountLeft3 <= 0) return
+                shootAuto(0,0,200)
+            }
         }
     })
 
