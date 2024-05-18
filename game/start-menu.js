@@ -57,7 +57,7 @@ function createStartMenu() {
             go('instructions')
         })
     })
-    
+
     // displays instructions
     scene('instructions', () => {
         createButton('Back',gameWidth/2, gameHeight-100, () => {

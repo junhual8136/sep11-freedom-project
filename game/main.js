@@ -68,9 +68,9 @@ createStartMenu()
 scene('game', () => {
     loadMap()
     fpsDisplay()
-    setBackground(Color.fromHex('#ADD8E6'))
+    setBackground(BLACK)
 
-    const player = add([sprite("64xTile"), area(),body(),pos(750, 600),scale(0.5),"player"],)
+    const player = add([sprite("pale"), area(),body(),pos(750, 600),scale(2.5),"player"],)
 
     let speed = 90
     let playerHealth = 100
@@ -96,7 +96,7 @@ scene('game', () => {
     let explosionKB = -30000
 
     let hostileKB = -2000
-    let kb = 3200
+    let kb = 6000
     let hostileDamage = 5
 
     const hostileAlive = []
@@ -274,6 +274,9 @@ scene('game', () => {
         if (!debug.inspect) debug.inspect = true
         else if (debug.inspect) debug.inspect = false
     })
+    onKeyPress('j', () => {
+       console.log(`${player.pos.x} ${player.pos.y}`)
+    })
 
     // clicks to shoot
     onClick(() => {
@@ -301,7 +304,7 @@ scene('game', () => {
     // single Shot for hotbar1
     function shoot(xOffset,yOffset,timeout = 1) {
         if (cooldown) return
-        add([sprite("64xTile"),pos(player.pos.x + xOffset,player.pos.y + yOffset),area(),scale(0.1),move(toWorld(mousePos()).sub(player.pos),1500),offscreen({ destroy: true }),"projectile",])
+        add([sprite("yellow"),pos(player.pos.x + xOffset,player.pos.y + yOffset),area(),scale(0.2),move(toWorld(mousePos()).sub(player.pos),1500),offscreen({ destroy: true }),"projectile",])
          amountLeft1--
         cooldown = true
         setTimeout(() => {
@@ -311,9 +314,9 @@ scene('game', () => {
     // Triple Shot for hotbar2
     function threeShot(timeout) {
         if (threeCooldown) return
-        add([sprite("64xTile"),pos(player.pos.x ,player.pos.y),area(),scale(0.1),move(toWorld(mousePos()).sub(player.pos),1500),offscreen({ destroy: true }),"projectile",])
-        add([sprite("64xTile"),pos(player.pos.x + 25,player.pos.y + 25),area(),scale(0.1),move(toWorld(mousePos()).sub(player.pos),1500),offscreen({ destroy: true }),"projectile",])
-        add([sprite("64xTile"),pos(player.pos.x + -25,player.pos.y + -25),area(),scale(0.1),move(toWorld(mousePos()).sub(player.pos),1500),offscreen({ destroy: true }),"projectile",])
+        add([sprite("yellow"),pos(player.pos.x ,player.pos.y),area(),scale(0.2),move(toWorld(mousePos()).sub(player.pos),1500),offscreen({ destroy: true }),"projectile",])
+        add([sprite("yellow"),pos(player.pos.x + 25,player.pos.y + 25),area(),scale(0.2),move(toWorld(mousePos()).sub(player.pos),1500),offscreen({ destroy: true }),"projectile",])
+        add([sprite("yellow"),pos(player.pos.x + -25,player.pos.y + -25),area(),scale(0.2),move(toWorld(mousePos()).sub(player.pos),1500),offscreen({ destroy: true }),"projectile",])
         amountLeft2--
         threeCooldown = true
         setTimeout(() => {
@@ -323,7 +326,7 @@ scene('game', () => {
     // Auto for hotbar 3
     function shootAuto(xOffset,yOffset,timeout = 1) {
         if (cooldown) return
-        add([sprite("64xTile"),pos(player.pos.x + xOffset,player.pos.y + yOffset),area(),scale(0.1),move(toWorld(mousePos()).sub(player.pos),1500),offscreen({ destroy: true }),"projectile",])
+        add([sprite("yellow"),pos(player.pos.x + xOffset,player.pos.y + yOffset),area(),scale(0.2),move(toWorld(mousePos()).sub(player.pos),1500),offscreen({ destroy: true }),"projectile",])
         amountLeft3--
         cooldown = true
         setTimeout(() => {
@@ -373,15 +376,35 @@ scene('game', () => {
     // summons a number of enemies at a random location
     function wave(number) {
         for (let i=0;i<number;i++) {
-            const explosive = rng(1,2)
+            const explosive = rng(1,10)
             // rolls random X and Y coordinates
-            let [randomX,randomY] = [rng(200,800),rng(200,800)]
-
+            let randomSpawn = ['north','east','south','west']
+            let chooseSpawn = randomSpawn[rng(1,4) - 1]
+            let [randomX,randomY] = [500,500]
+            switch(chooseSpawn) {
+                case 'north':
+                    randomX = 1200
+                    randomY = 200
+                    break
+                case 'east':
+                    randomX = 2200
+                    randomY = 800
+                    break
+                case 'south':
+                    randomX = 1200
+                    randomY = 1400
+                    break
+                case 'west':
+                    randomX = 1600
+                    randomY = 800
+                    break
+                default: break;
+            }
             // 1/10 enemies will be a unique type
             if (explosive === 1) {
-                hostileAlive.push(add([sprite("64xTile"), area(),body(),pos(randomX, randomY),scale(0.75),offscreen({ destroy: false }),"hostile","explosive",{health: 100}]))
+                hostileAlive.push(add([sprite("red"), area(),body(),pos(randomX, randomY),scale(3),offscreen({ destroy: false }),"hostile","explosive",{health: 100}]))
             } else {
-                hostileAlive.push(add([sprite("64xTile"), area(),body(),pos(randomX, randomY),scale(0.5),offscreen({ destroy: false }),"hostile",{health: 100}]))
+                hostileAlive.push(add([sprite("green"), area(),body(),pos(randomX, randomY),scale(2.5),offscreen({ destroy: false }),"hostile",{health: 100}]))
             }
         }
     }
@@ -457,7 +480,7 @@ scene('game', () => {
         // deletes the enemy if health is 0 or below
         // spawns an ammo drop at that death location
         if (hostile.health <= 0) {
-            drops.push(add([sprite("64xTile"),pos(hostile.pos.x,hostile.pos.y),area(),scale(0.2),"drop",]))
+            drops.push(add([sprite("yellow"),pos(hostile.pos.x,hostile.pos.y),area(),scale(1),"drop",]))
             destroy(hostile)
         }
     })
@@ -478,7 +501,7 @@ scene('game', () => {
             ])
             timeBomb.add([
                 rect(30,30),
-                opacity(0.3),
+                opacity(0.5),
                 color(RED),
 
             ])
@@ -507,13 +530,14 @@ scene('game', () => {
     // collisions
     // explosions, player looses 25 health
     onCollide('player','explosion', (player,explosion) => {
-        player.health -= 25
+        playerHealth -= 25
         console.log('in')
     })
     onCollide('player','drop', (player,drop) => {
         amountLeft1 += 5
         amountLeft2 += 2
         amountLeft3 += 10
+        if (playerHealth <= 200)  playerHealth += 10
         destroy(drop)
 
     })
