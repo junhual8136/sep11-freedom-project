@@ -287,7 +287,7 @@ scene('game', () => {
     const hostileAlive = []
     function wave(number) {
         for (let i=0;i<number;i++) {
-            const explosive = rng(1,10)
+            const explosive = rng(1,2)
             const playerX = player.pos.x
             const playerY = player.pos.y
             let [randomX,randomY] = [rng(200,800),rng(200,800)]
@@ -419,16 +419,76 @@ scene('game', () => {
     })
 
     const blastLocations = []
+    let explosionKB = -30000
     onCollide("projectile", "explosive", (projectile,explosive) => {
-        if (explosive.health <=0) {
-            explode(explosive.pos.x,explosive.pos.y)
+        if (explosive.health <= 0) {
+           const timeBomb = add([
+                text('4'),
+                color(BLACK),
+                pos(explosive.pos.x,explosive.pos.y),
+                outline(1),
+                area(),
+                scale(1),
+                z(1),
+                {timeLeft: 4},
+            ])
+            timeBomb.add([
+                rect(30,30),
+                opacity(0.3),
+                color(RED),
+
+            ])
+            blastLocations.push(timeBomb)
+
         }
     })
+    setInterval(() => {
+        if (paused) return
+        blastLocations.forEach((element,index) => {
+            element.timeLeft--
+            element.text = element.timeLeft
+            if (element.timeLeft <= 0) {
+                explode(element.pos.x,element.pos.y)
+                destroy(element)
+                blastLocations.splice(index,1)
+            }
 
+        });
+    }, 1000);
     function explode(x,y) {
-        //todo later
-    }
+        const circles = add([
+            circle(196),
+            area(),
+            // body(),
+            pos(x, y),
+            opacity(0.7),
+            color('#FFA500'),
+            'explosion',
+        ])
 
+
+        setTimeout(() => {
+            destroy(circles)
+        }, 750);
+    }
+    onKeyPress('j', ()=>{
+        explode(player.pos.x,player.pos.y)
+    })
+    onCollide('player','explosion', (player,explosion) => {
+        console.log('caught')
+        if (explosion.pos.x > player.pos.x) { // from right
+            player.move(-explosionKB, 0)
+        }
+        else if (explosion.pos.x < player.pos.x) { // from left
+            player.move(explosionKB, 0)
+        }
+        else if (explosion.pos.y > player.pos.x) { // from top
+            player.move(0, -explosionKB)
+        }
+        else if (explosion.pos.y < player.pos.x) { // from bottom
+            player.move(0, explosionKB)
+        }
+    })
     onCollide('player','drop', (player,drop) => {
         amountLeft1 += 5
         amountLeft2 += 2
