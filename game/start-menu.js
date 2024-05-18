@@ -57,7 +57,8 @@ function createStartMenu() {
             go('instructions')
         })
     })
-
+    
+    // displays instructions
     scene('instructions', () => {
         createButton('Back',gameWidth/2, gameHeight-100, () => {
             go('startMenu')
@@ -97,7 +98,7 @@ function createStartMenu() {
         })
 
 
-
+        // prompts user to set control
         function popUp(variable) {
             let getKeyPressed = true
             const popUpBG = add([
@@ -148,6 +149,8 @@ function createStartMenu() {
 
             })
         }
+
+        // creates a small box with the control key, if clicked it will prompt a popup to allow the user to change it
         const upControl = add([text('moveUp:',{size:50}),pos(gameWidth/4 - 120, 150),color(255,255,255),z(1),fixed(),])
         const upControlRect =  add([pos(upControl.pos.x + 300, upControl.pos.y + 25),rect(55, 60, {radius: 4}),anchor("center"),outline(1),fixed(),area(),opacity(0.8),color(0,0,0),z(0),])
         const upControlset =  add([text(moveUp,{size: 50}),pos(upControlRect.pos.x, upControl.pos.y + 25),anchor("center"),outline(1),fixed(),opacity(0.8),color(255,255,255),z(0),])
@@ -184,7 +187,7 @@ function createStartMenu() {
         hotbar3Rect.onClick(() => {popUp(changeToSlot3)})
 
 
-
+        // updates control
         onUpdate(() => {
             upControlset.text = moveUp
             leftControlset.text = moveLeft
