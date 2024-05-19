@@ -108,6 +108,9 @@ scene('game', () => {
     const hostileAlive = []
 
     const blastLocations = []
+    const currentProjectiles = []
+
+    let hostileSpeed = 90
 
 
     // Heals the player every 5 seconds
@@ -310,7 +313,7 @@ scene('game', () => {
     // single Shot for hotbar1
     function shoot(xOffset,yOffset,timeout = 1) {
         if (cooldown) return
-        add([sprite("yellow"),pos(player.pos.x + xOffset,player.pos.y + yOffset),area(),scale(0.2),move(toWorld(mousePos()).sub(player.pos),1500),offscreen({ destroy: true }),{piercing: 1},"projectile",])
+        currentProjectiles.push(add([sprite("yellow"),pos(player.pos.x + xOffset,player.pos.y + yOffset),area(),scale(0.2),move(toWorld(mousePos()).sub(player.pos),1500),offscreen({ destroy: true }),{piercing: 1},"projectile",]))
          amountLeft1--
         cooldown = true
         setTimeout(() => {
@@ -320,9 +323,9 @@ scene('game', () => {
     // Triple Shot for hotbar2
     function threeShot(timeout) {
         if (threeCooldown) return
-        add([sprite("yellow"),pos(player.pos.x ,player.pos.y),area(),scale(0.2),move(toWorld(mousePos()).sub(player.pos),1500),offscreen({ destroy: true }),{piercing: 2},"projectile",])
-        add([sprite("yellow"),pos(player.pos.x + 25,player.pos.y + 25),area(),scale(0.2),move(toWorld(mousePos()).sub(player.pos),1500),offscreen({ destroy: true }),{piercing: 2},"projectile",])
-        add([sprite("yellow"),pos(player.pos.x + -25,player.pos.y + -25),area(),scale(0.2),move(toWorld(mousePos()).sub(player.pos),1500),offscreen({ destroy: true }),{piercing: 2},"projectile",])
+        currentProjectiles.push(add([sprite("yellow"),pos(player.pos.x ,player.pos.y),area(),scale(0.2),move(toWorld(mousePos()).sub(player.pos),1500),offscreen({ destroy: true }),{piercing: 2},"projectile",]))
+        currentProjectiles.push(add([sprite("yellow"),pos(player.pos.x + 25,player.pos.y + 25),area(),scale(0.2),move(toWorld(mousePos()).sub(player.pos),1500),offscreen({ destroy: true }),{piercing: 2},"projectile",]))
+        currentProjectiles.push(add([sprite("yellow"),pos(player.pos.x + -25,player.pos.y + -25),area(),scale(0.2),move(toWorld(mousePos()).sub(player.pos),1500),offscreen({ destroy: true }),{piercing: 2},"projectile",]))
         amountLeft2--
         threeCooldown = true
         setTimeout(() => {
@@ -332,7 +335,7 @@ scene('game', () => {
     // Auto for hotbar 3
     function shootAuto(xOffset,yOffset,timeout = 1) {
         if (cooldown) return
-        add([sprite("yellow"),pos(player.pos.x + xOffset,player.pos.y + yOffset),area(),scale(0.2),move(toWorld(mousePos()).sub(player.pos),1500),offscreen({ destroy: true }),{piercing: 1},"projectile",])
+        currentProjectiles.push(add([sprite("yellow"),pos(player.pos.x + xOffset,player.pos.y + yOffset),area(),scale(0.2),move(toWorld(mousePos()).sub(player.pos),1500),offscreen({ destroy: true }),{piercing: 1},"projectile",]))
         amountLeft3--
         cooldown = true
         setTimeout(() => {
@@ -369,12 +372,34 @@ scene('game', () => {
         // Makes every hostile entity follow the player
         if (!paused) {
             hostileAlive.forEach((hostile,index) => {
-                hostile.move(player.pos.sub(hostile.pos))
+                // hostile.move(player.pos.sub(hostile.pos))
+                const distanceX = player.pos.x - hostile.pos.x
+                const distanceY = player.pos.y - hostile.pos.y
+                // console.log(`${distanceX} ${distanceY}`)
+                if (distanceX > 0) {
+                    hostile.move(hostileSpeed,0)
+                } else if (distanceX < 0) {
+                    hostile.move(-hostileSpeed,0)
+                }
+
+                if (distanceY > 0) {
+                    hostile.move(0,hostileSpeed)
+                } else if (distanceY < 0) {
+                    hostile.move(0,-hostileSpeed)
+                }
+
                 if (hostile.health <= 0) {
                     hostileAlive.splice(index,1)
                 }
             })
         }
+
+        currentProjectiles.forEach((element,index) => {
+            if (element.piercing < 1) {
+                destroy(element)
+                currentProjectiles.slice(index,1)
+            }
+        })
 
     })
 
@@ -428,6 +453,7 @@ scene('game', () => {
             return
         }
 
+
         // checks if all the enemies are dead and summons a new wave
         if (hostileAlive.length === 0 && gameTime > 10) {
             if (!spawnCooldown) {
@@ -467,7 +493,6 @@ scene('game', () => {
     // collisions
     // runs when bullet/projectile hits the enemies
     onCollide("projectile", "hostile", (projectile,hostile) => {
-        console.log(projectile.piercing)
         if (projectile.piercing < 1) {
             destroy(projectile)
         }
