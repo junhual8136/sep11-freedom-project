@@ -370,6 +370,7 @@ scene('game', () => {
 
         // prompts the dead menu
         if (HP.value <= 0) {
+            currentWave = 0
             endGame()
         }
 
