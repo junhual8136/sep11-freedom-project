@@ -22,13 +22,25 @@ loadSprites()
 
 function fpsDisplay() {
     const fps = add([
-        text(`${debug.fps()}`, {size: 24,}),
-        pos(gameWidth - 40,15),
-        color(0,255,0),
+        text(`FPS: ${debug.fps()}`, {size: 16,}),
+        pos(gameWidth - 90,30),
+        anchor("center"),
         fixed(),
-        z(1),
+        color(255,255,255),
+        z(3),
     ])
-     onUpdate(() => fps.text = debug.fps())
+   const fpsBackground = add([
+    rect(90,30, {radius: 8}),
+    pos(gameWidth - 90,30),
+    anchor("center"),
+    fixed(),
+    color(0,0,0),
+    opacity(0.8),
+    z(2),
+   ])
+
+
+     onUpdate(() => fps.text = `FPS: ${debug.fps()}`)
 }
 
 function createMainButton(name,x,y,ignoreThis) {
