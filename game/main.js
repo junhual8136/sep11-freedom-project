@@ -8,6 +8,8 @@ let gameWidth = 1200
 let gameHeight = 800
 let paused = false
 
+let totalKills = 0
+let currentWave = 0
 
 kaboom({
     width: gameWidth,
@@ -71,6 +73,11 @@ scene('game', () => {
     setBackground(BLACK)
 
     const player = add([sprite("pale"), area(),body(),pos(750, 600),scale(2.5),"player"],)
+    const greenTest = add([
+        circle(13),
+        opacity(0.9),
+        color('#FFA500'),
+    ])
 
     let speed = 90
     let playerHealth = 100
@@ -84,7 +91,6 @@ scene('game', () => {
     let menuOpen = false
 
     let gameTime = 0
-    let currentWave = 0
     let spawnCooldown = false
     let drops = []
 
@@ -304,7 +310,7 @@ scene('game', () => {
     // single Shot for hotbar1
     function shoot(xOffset,yOffset,timeout = 1) {
         if (cooldown) return
-        add([sprite("yellow"),pos(player.pos.x + xOffset,player.pos.y + yOffset),area(),scale(0.2),move(toWorld(mousePos()).sub(player.pos),1500),offscreen({ destroy: true }),"projectile",])
+        add([sprite("yellow"),pos(player.pos.x + xOffset,player.pos.y + yOffset),area(),scale(0.2),move(toWorld(mousePos()).sub(player.pos),1500),offscreen({ destroy: true }),{piercing: 1},"projectile",])
          amountLeft1--
         cooldown = true
         setTimeout(() => {
@@ -314,9 +320,9 @@ scene('game', () => {
     // Triple Shot for hotbar2
     function threeShot(timeout) {
         if (threeCooldown) return
-        add([sprite("yellow"),pos(player.pos.x ,player.pos.y),area(),scale(0.2),move(toWorld(mousePos()).sub(player.pos),1500),offscreen({ destroy: true }),"projectile",])
-        add([sprite("yellow"),pos(player.pos.x + 25,player.pos.y + 25),area(),scale(0.2),move(toWorld(mousePos()).sub(player.pos),1500),offscreen({ destroy: true }),"projectile",])
-        add([sprite("yellow"),pos(player.pos.x + -25,player.pos.y + -25),area(),scale(0.2),move(toWorld(mousePos()).sub(player.pos),1500),offscreen({ destroy: true }),"projectile",])
+        add([sprite("yellow"),pos(player.pos.x ,player.pos.y),area(),scale(0.2),move(toWorld(mousePos()).sub(player.pos),1500),offscreen({ destroy: true }),{piercing: 2},"projectile",])
+        add([sprite("yellow"),pos(player.pos.x + 25,player.pos.y + 25),area(),scale(0.2),move(toWorld(mousePos()).sub(player.pos),1500),offscreen({ destroy: true }),{piercing: 2},"projectile",])
+        add([sprite("yellow"),pos(player.pos.x + -25,player.pos.y + -25),area(),scale(0.2),move(toWorld(mousePos()).sub(player.pos),1500),offscreen({ destroy: true }),{piercing: 2},"projectile",])
         amountLeft2--
         threeCooldown = true
         setTimeout(() => {
@@ -326,7 +332,7 @@ scene('game', () => {
     // Auto for hotbar 3
     function shootAuto(xOffset,yOffset,timeout = 1) {
         if (cooldown) return
-        add([sprite("yellow"),pos(player.pos.x + xOffset,player.pos.y + yOffset),area(),scale(0.2),move(toWorld(mousePos()).sub(player.pos),1500),offscreen({ destroy: true }),"projectile",])
+        add([sprite("yellow"),pos(player.pos.x + xOffset,player.pos.y + yOffset),area(),scale(0.2),move(toWorld(mousePos()).sub(player.pos),1500),offscreen({ destroy: true }),{piercing: 1},"projectile",])
         amountLeft3--
         cooldown = true
         setTimeout(() => {
@@ -402,9 +408,9 @@ scene('game', () => {
             }
             // 1/10 enemies will be a unique type
             if (explosive === 1) {
-                hostileAlive.push(add([sprite("red"), area(),body(),pos(randomX, randomY),scale(3),offscreen({ destroy: false }),"hostile","explosive",{health: 100}]))
+                hostileAlive.push(add([sprite("red"), area(),body(),pos(randomX, randomY),scale(0.2),outline(5),offscreen({ destroy: false }),"hostile","explosive",{health: 100}]))
             } else {
-                hostileAlive.push(add([sprite("green"), area(),body(),pos(randomX, randomY),scale(2.5),offscreen({ destroy: false }),"hostile",{health: 100}]))
+                hostileAlive.push(add([sprite("green"), area(),body(),pos(randomX, randomY),scale(0.2),outline(5),offscreen({ destroy: false }),"hostile",{health: 100}]))
             }
         }
     }
@@ -461,8 +467,13 @@ scene('game', () => {
     // collisions
     // runs when bullet/projectile hits the enemies
     onCollide("projectile", "hostile", (projectile,hostile) => {
+        console.log(projectile.piercing)
+        if (projectile.piercing < 1) {
+            destroy(projectile)
+        }
         hostile.health -= damage
-        destroy(projectile)
+        projectile.piercing -= 1
+
 
         // checks from which direction the bullet hit the enemy and deal knockback toward that direction
         if (hostile.pos.x > projectile.pos.x) { // from right
@@ -482,6 +493,7 @@ scene('game', () => {
         if (hostile.health <= 0) {
             drops.push(add([sprite("yellow"),pos(hostile.pos.x,hostile.pos.y),area(),scale(1),"drop",]))
             destroy(hostile)
+            totalKills++
         }
     })
 
@@ -565,5 +577,5 @@ scene('game', () => {
 })
 
 
-export { gameWidth, gameHeight, fpsDisplay }
+export { gameWidth, gameHeight, fpsDisplay, totalKills, currentWave}
 
