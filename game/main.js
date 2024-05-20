@@ -225,6 +225,10 @@ scene('game', () => {
     const menuAutoDamageUpgrade = createMainButton('10',menuAutoDamage.pos.x + 150, menuAutoDamage.pos.y,80,60,() => {
         if (isUpgradeMenuOpen) autoDamage++
     })
+    const menuSpeed = add([text(`Speed: ${speed}`,{size:24}),pos(upgradeMenuBackground.pos.x - 250, upgradeMenuBackground.pos.y + 100),fixed(),anchor('center'),color(255,255,255),z(1),])
+    const menuSpeedUpgrade = createMainButton('10',menuSpeed.pos.x + 150, menuSpeed.pos.y,80,60,() => {
+        if (isUpgradeMenuOpen) speed += 5
+    })
 
 
     const menuSinglePiercing = add([text(`Single Piercing: ${singleGoThrough}`,{size:24}),pos(upgradeMenuBackground.pos.x + 150, upgradeMenuBackground.pos.y - 200),fixed(),anchor('center'),color(255,255,255),z(1),])
@@ -238,6 +242,10 @@ scene('game', () => {
     const menuAutoPiercing = add([text(`Triple Piercing: ${autoGoThrough}`,{size:24}),pos(upgradeMenuBackground.pos.x + 150, upgradeMenuBackground.pos.y),fixed(),anchor('center'),color(255,255,255),z(1),])
     const menuAutoPiercingUpgrade = createMainButton('10',menuAutoPiercing.pos.x + 150, menuAutoPiercing.pos.y,80,60,() => {
         if (isUpgradeMenuOpen) autoGoThrough++
+    })
+    const menuMaxHealth = add([text(`Max Health: ${maxHealth}`,{size:24}),pos(upgradeMenuBackground.pos.x + 150, upgradeMenuBackground.pos.y + 100),fixed(),anchor('center'),color(255,255,255),z(1),])
+    const menuMaxHealthUpgrade = createMainButton('10',menuMaxHealth.pos.x + 150, menuMaxHealth.pos.y,80,60,() => {
+        if (isUpgradeMenuOpen) maxHealth += 10
     })
 
     const closeButton = createMainButton('Close',gameWidth/2, gameHeight - 300,240,80, () => {
@@ -256,7 +264,10 @@ scene('game', () => {
             menuTriplePiercingUpgrade.hidden = true
             menuAutoPiercing.hidden = true
             menuAutoPiercingUpgrade.hidden = true
-
+            menuSpeed.hidden = true
+            menuSpeedUpgrade.hidden = true
+            menuMaxHealth.hidden = true
+            menuMaxHealthUpgrade.hidden = true
             isUpgradeMenuOpen = false
 
         }
@@ -272,6 +283,8 @@ scene('game', () => {
         menuSinglePiercing.text = `Single Piercing: ${singleGoThrough}`
         menuTriplePiercing.text = `Triple Piercing: ${tripleGoThrough}`
         menuAutoPiercing.text = `Auto Piercing: ${autoGoThrough}`
+        menuSpeed.text = `Speed: ${speed}`
+        menuMaxHealth.text = `Max Health: ${maxHealth}`
 
     })
 
@@ -426,6 +439,10 @@ scene('game', () => {
             menuTriplePiercingUpgrade.hidden = false
             menuAutoPiercing.hidden = false
             menuAutoPiercingUpgrade.hidden = false
+            menuSpeed.hidden = false
+            menuSpeedUpgrade.hidden = false
+            menuMaxHealth.hidden = false
+            menuMaxHealthUpgrade.hidden = false
 
             isUpgradeMenuOpen = true
     })
