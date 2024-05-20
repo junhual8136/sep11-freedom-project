@@ -12,9 +12,16 @@ let totalKills = 0
 let currentWave = 0
 
 let totalCurrency = 0
+
+let singleDamage = 20
 let singleGoThrough = 1
+
+let tripleDamage = 20
 let tripleGoThrough = 2
+
+let autoDamage = 20
 let autoGoThrough = 1
+
 let speed = 90
 let maxHealth = 200
 kaboom({
@@ -49,9 +56,9 @@ function fpsDisplay() {
      onUpdate(() => fps.text = `FPS: ${debug.fps()}`)
 }
 
-function createMainButton(name,x,y,ignoreThis) {
+function createMainButton(name,x,y,width=240,height = 80,ignoreThis) {
     const mainButton = add([
-        rect(240, 80, { radius: 32 }),
+        rect(width, height, { radius: 32 }),
         color(0,0,0),
         opacity(0.7),
         pos(x,y),
@@ -80,6 +87,8 @@ function createMainButton(name,x,y,ignoreThis) {
     mainButton.onClick(ignoreThis)
     return mainButton
 }
+
+
 
 const rng = (min, max) => Math.floor(Math.random() * (max - min) + min)
 
@@ -193,7 +202,7 @@ scene('game', () => {
     function upgradeMenu(openOrClose) {
         const upgradeMenuBackground = add([
             pos(gameWidth/2, gameHeight/2.5),
-            rect(700, 500, {radius: 12}),
+            rect(900, 500, {radius: 12}),
             outline(3),
             fixed(),
             anchor('center'),
@@ -201,20 +210,41 @@ scene('game', () => {
             opacity(0.6),
             z(1),
         ])
+        const menuSingleDamage = add([
+            text(`Single Damage: ${singleDamage}`,{size:24}),
+            pos(upgradeMenuBackground.pos.x - 250, upgradeMenuBackground.pos.y - 150),
+            fixed(),
+            anchor('center'),
+            color(255,255,255),
+            z(1),
+        ])
+        const menuSingleDamageUpgrade = createMainButton('10',menuSingleDamage.pos.x + 150, menuSingleDamage.pos.y,80,60,() => {
+            if (isUpgradeMenuOpen) {
+                singleDamage++
+            }
+        })
 
-        const closeButton = createMainButton('Close',gameWidth/2, gameHeight - 300, () => {
-            if (openOrClose) {
+        const closeButton = createMainButton('Close',gameWidth/2, gameHeight - 300,240,80, () => {
+            if (isUpgradeMenuOpen) {
                 upgradeMenuBackground.hidden = true
                 closeButton.hidden = true
+                menuSingleDamage.hidden = true
+                menuSingleDamageUpgrade.hidden = true
 
                 isUpgradeMenuOpen = false
             }
         })
-        
-        if (openOrClose) {
+
+        if (isUpgradeMenuOpen) {
             upgradeMenuBackground.hidden = false
             closeButton.hidden = false
+            menuSingleDamage.hidden = false
+            menuSingleDamageUpgrade.hidden = false
         }
+
+        onUpdate(() => {
+            menuSingleDamage.text = `Single Damage: ${singleDamage}`
+        })
     }
     // Menu GUI
     const menuBG = add([
@@ -233,12 +263,12 @@ scene('game', () => {
         color(255,255,255),
         z(3),
     ])
-    const goToStartMenu = createMainButton('Start Menu',gameWidth/2,gameHeight/3 + 190, () => {
+    const goToStartMenu = createMainButton('Start Menu',gameWidth/2,gameHeight/3 + 190,240,80, () => {
         if (!goToStartMenu.hidden) {
             go('startMenu')
         }
     })
-    const resumeButton = createMainButton('resume',gameWidth/2,gameHeight/3 + 60, () => {
+    const resumeButton = createMainButton('resume',gameWidth/2,gameHeight/3 + 60,240,80, () => {
         if (!resumeButton.hidden) {
             menuBG.hidden = true
             menuText.hidden = true
@@ -392,7 +422,7 @@ scene('game', () => {
     // single Shot for hotbar1
     function shoot(xOffset,yOffset,timeout = 1) {
         if (cooldown) return
-        currentProjectiles.push(add([sprite("yellow"),pos(player.pos.x + xOffset,player.pos.y + yOffset),area(),scale(0.2),move(toWorld(mousePos()).sub(player.pos),1500),offscreen({ destroy: true }),{piercing: 1},"projectile",]))
+        currentProjectiles.push(add([sprite("yellow"),pos(player.pos.x + xOffset,player.pos.y + yOffset),area(),scale(0.2),move(toWorld(mousePos()).sub(player.pos),1500),offscreen({ destroy: true }),{piercing: singleGoThrough, fireType: 'single'},"projectile",]))
          amountLeft1--
         cooldown = true
         setTimeout(() => {
@@ -402,9 +432,9 @@ scene('game', () => {
     // Triple Shot for hotbar2
     function threeShot(timeout) {
         if (threeCooldown) return
-        currentProjectiles.push(add([sprite("yellow"),pos(player.pos.x ,player.pos.y),area(),scale(0.2),move(toWorld(mousePos()).sub(player.pos),1500),offscreen({ destroy: true }),{piercing: 2},"projectile",]))
-        currentProjectiles.push(add([sprite("yellow"),pos(player.pos.x + 25,player.pos.y + 25),area(),scale(0.2),move(toWorld(mousePos()).sub(player.pos),1500),offscreen({ destroy: true }),{piercing: 2},"projectile",]))
-        currentProjectiles.push(add([sprite("yellow"),pos(player.pos.x + -25,player.pos.y + -25),area(),scale(0.2),move(toWorld(mousePos()).sub(player.pos),1500),offscreen({ destroy: true }),{piercing: 2},"projectile",]))
+        currentProjectiles.push(add([sprite("yellow"),pos(player.pos.x ,player.pos.y),area(),scale(0.2),move(toWorld(mousePos()).sub(player.pos),1500),offscreen({ destroy: true }),{piercing: tripleGoThrough, fireType: 'triple', },"projectile",]))
+        currentProjectiles.push(add([sprite("yellow"),pos(player.pos.x + 25,player.pos.y + 25),area(),scale(0.2),move(toWorld(mousePos()).sub(player.pos),1500),offscreen({ destroy: true }),{piercing: tripleGoThrough,fireType: 'triple',},"projectile",]))
+        currentProjectiles.push(add([sprite("yellow"),pos(player.pos.x + -25,player.pos.y + -25),area(),scale(0.2),move(toWorld(mousePos()).sub(player.pos),1500),offscreen({ destroy: true }),{piercing: tripleGoThrough, fireType: 'triple',},"projectile",]))
         amountLeft2--
         threeCooldown = true
         setTimeout(() => {
@@ -414,7 +444,7 @@ scene('game', () => {
     // Auto for hotbar 3
     function shootAuto(xOffset,yOffset,timeout = 1) {
         if (cooldown) return
-        currentProjectiles.push(add([sprite("yellow"),pos(player.pos.x + xOffset,player.pos.y + yOffset),area(),scale(0.2),move(toWorld(mousePos()).sub(player.pos),1500),offscreen({ destroy: true }),{piercing: 1},"projectile",]))
+        currentProjectiles.push(add([sprite("yellow"),pos(player.pos.x + xOffset,player.pos.y + yOffset),area(),scale(0.2),move(toWorld(mousePos()).sub(player.pos),1500),offscreen({ destroy: true }),{piercing: autoGoThrough, fireType: 'auto',},"projectile",]))
         amountLeft3--
         cooldown = true
         setTimeout(() => {
@@ -435,8 +465,11 @@ scene('game', () => {
         if (HP.value <= 0) {
             currentWave = 0
             totalCurrency = 0
+            singleDamage = 0
             singleGoThrough = 1
+            tripleDamage = 0
             tripleGoThrough = 2
+            autoDamage = 0
             autoGoThrough = 1
             speed = 90
             maxHealth = 200
@@ -581,9 +614,15 @@ scene('game', () => {
         if (projectile.piercing < 1) {
             destroy(projectile)
         }
-        hostile.health -= damage
-        projectile.piercing -= 1
 
+        if (projectile.fireType == 'single') {
+            hostile.health -= singleDamage
+        } else if (projectile.fireType == 'triple') {
+            hostile.health -= tripleDamage
+        } else if (projectile.fireType == 'auto') {
+            hostile.health -= autoDamage
+        }
+        projectile.piercing -= 1
 
         // checks from which direction the bullet hit the enemy and deal knockback toward that direction
         if (hostile.pos.x > projectile.pos.x) { // from right
