@@ -1,5 +1,5 @@
 import {loadMap} from './map.js'
-import {createStartMenu,createButton,moveUp, moveLeft, moveDown, moveRight, changeToSlot1, changeToSlot2, changeToSlot3} from './start-menu.js'
+import {createStartMenu,createButton,moveUp, moveLeft, moveDown, moveRight, changeToSlot1, changeToSlot2, changeToSlot3, openTheUpgradeMenu} from './start-menu.js'
 import {endGame} from './dead-menu.js'
 import {loadSprites} from './load.js'
 
@@ -11,6 +11,12 @@ let paused = false
 let totalKills = 0
 let currentWave = 0
 
+let totalCurrency = 0
+let singleGoThrough = 1
+let tripleGoThrough = 2
+let autoGoThrough = 1
+let speed = 90
+let maxHealth = 200
 kaboom({
     width: gameWidth,
     height: gameHeight,
@@ -91,7 +97,7 @@ scene('game', () => {
         color('#FFA500'),
     ])
 
-    let speed = 90
+
     let playerHealth = 100
     paused = false
 
@@ -125,6 +131,8 @@ scene('game', () => {
     let hostileSpeed = 90
     let sprintSpeed = speed * 2
     let sprinting = false
+
+    let isUpgradeMenuOpen = false
 
     // Heals the player every 5 seconds
     setInterval(() => {
@@ -180,6 +188,34 @@ scene('game', () => {
         text(amountLeft3,{size:18}),pos(slot3.pos.x + 5, slot3.pos.y + 10),color(255,255,255),z(1),fixed(),
     ])
 
+
+    // Upgrade menu
+    function upgradeMenu(openOrClose) {
+        const upgradeMenuBackground = add([
+            pos(gameWidth/2, gameHeight/2.5),
+            rect(700, 500, {radius: 12}),
+            outline(3),
+            fixed(),
+            anchor('center'),
+            color(0,0,0),
+            opacity(0.6),
+            z(1),
+        ])
+
+        const closeButton = createMainButton('Close',gameWidth/2, gameHeight - 300, () => {
+            if (openOrClose) {
+                upgradeMenuBackground.hidden = true
+                closeButton.hidden = true
+
+                isUpgradeMenuOpen = false
+            }
+        })
+        
+        if (openOrClose) {
+            upgradeMenuBackground.hidden = false
+            closeButton.hidden = false
+        }
+    }
     // Menu GUI
     const menuBG = add([
         pos(gameWidth/2 - 200, gameHeight/5),
@@ -313,6 +349,14 @@ scene('game', () => {
         }
     })
 
+    // Opens upgrade menu
+    onKeyPress(openTheUpgradeMenu, ()=> {
+        if (!isUpgradeMenuOpen) {
+            upgradeMenu(true)
+            isUpgradeMenuOpen = true
+        }
+    })
+
     // Toggles debug mode
     onKeyPress('p', () => {
         if (!debug.inspect) debug.inspect = true
@@ -390,6 +434,12 @@ scene('game', () => {
         // prompts the dead menu
         if (HP.value <= 0) {
             currentWave = 0
+            totalCurrency = 0
+            singleGoThrough = 1
+            tripleGoThrough = 2
+            autoGoThrough = 1
+            speed = 90
+            maxHealth = 200
             endGame()
         }
 
@@ -485,7 +535,6 @@ scene('game', () => {
             return
         }
 
-
         // checks if all the enemies are dead and summons a new wave
         if (hostileAlive.length === 0 && gameTime > 10) {
             if (!spawnCooldown) {
@@ -502,6 +551,10 @@ scene('game', () => {
                 }, 2000);
                 // cooldown to prevent bug that calls the wave function twice due to lag
                 spawnCooldown = true
+
+                if (currentWave % 5 == 0) {
+                    hostileSpeed += 20
+                }
                 setTimeout(() => {
                     spawnCooldown = false
                 }, 4000);
@@ -606,7 +659,7 @@ scene('game', () => {
         amountLeft1 += 5
         amountLeft2 += 2
         amountLeft3 += 10
-        if (playerHealth <= 200)  playerHealth += 10
+        if (playerHealth < maxHealth)  playerHealth += 10
         destroy(drop)
 
     })
