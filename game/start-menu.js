@@ -1,13 +1,26 @@
 
 import {fpsDisplay, gameHeight, gameWidth} from './main.js'
+// console.log(localStorage.getItem('firstLoad'))
+if (localStorage.getItem('firstLoad') == undefined) {
+    localStorage.setItem("moveUp", "w")
+    localStorage.setItem("moveLeft", "a")
+    localStorage.setItem("moveDown", "s")
+    localStorage.setItem("moveRight", "d")
+    localStorage.setItem("changeToSlot1", 1)
+    localStorage.setItem("changeToSlot2", 2)
+    localStorage.setItem("changeToSlot3", 3)
+    localStorage.setItem("firstLoad",true)
+    // console.log(localStorage.getItem('firstLoad'))
+}
+console.table(localStorage)
 
-let moveUp = 'w'
-let moveLeft = 'a'
-let moveDown = 's'
-let moveRight = 'd'
-let changeToSlot1 = 1
-let changeToSlot2 = 2
-let changeToSlot3 = 3
+let moveUp = localStorage.getItem('moveUp')
+let moveLeft = localStorage.getItem('moveLeft')
+let moveDown = localStorage.getItem('moveDown')
+let moveRight = localStorage.getItem('moveRight')
+let changeToSlot1 = localStorage.getItem('changeToSlot1')
+let changeToSlot2 = localStorage.getItem('changeToSlot2')
+let changeToSlot3 = localStorage.getItem('changeToSlot3')
 
 
 function createButton(name,x,y,ignoreThis) {
@@ -121,24 +134,32 @@ function createStartMenu() {
                 if (!getKeyPressed) return
                 if (variable == "moveUp") {
                     moveUp = ch
+                    localStorage.setItem("moveUp", ch)
+
                 }
                 else if (variable == "moveLeft") {
                     moveLeft = ch
+                    localStorage.setItem("moveLeft", ch)
                 }
                 else if (variable == "moveDown") {
                     moveDown = ch
+                    localStorage.setItem("moveDown", ch)
                 }
                 else if (variable == "moveRight") {
                     moveRight = ch
+                    localStorage.setItem("moveRight", ch)
                 }
                 else if (variable == "changeToSlot1") {
                     changeToSlot1 = ch
+                    localStorage.setItem("changeToSlot1", ch)
                 }
                 else if (variable == "changeToSlot2") {
                     changeToSlot2 = ch
+                    localStorage.setItem("changeToSlot2", ch)
                 }
                 else if (variable == "changeToSlot3") {
                     changeToSlot3 = ch
+                    localStorage.setItem("changeToSlot3", ch)
                 }
                 destroy(popUpBG)
                 getKeyPressed = false

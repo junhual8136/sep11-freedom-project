@@ -123,7 +123,8 @@ scene('game', () => {
     const currentProjectiles = []
 
     let hostileSpeed = 90
-
+    let sprintSpeed = speed * 2
+    let sprinting = false
 
     // Heals the player every 5 seconds
     setInterval(() => {
@@ -230,11 +231,33 @@ scene('game', () => {
 
     // Controls
     // movement
-    onKeyDown(moveUp, () => {player.move(0, -speed)})
-    onKeyDown(moveLeft, () => {player.move(-speed, 0)})
-    onKeyDown(moveDown, () => {player.move(0, speed)})
-    onKeyDown(moveRight, () => {player.move(speed, 0)})
-    player.onUpdate(() => {camPos(player.pos )})
+
+    onKeyDown(moveUp, () => {
+        if (!sprinting) player.move(0, -speed)
+        else if (sprinting) player.move(0, -sprintSpeed)
+    })
+    onKeyDown(moveLeft, () => {
+        if (!sprinting) player.move(-speed, 0)
+        else if (sprinting) player.move(-sprintSpeed, 0)
+    })
+    onKeyDown(moveDown, () => {
+        if (!sprinting) player.move(0, speed)
+        else if (sprinting) player.move(0,sprintSpeed)
+    })
+    onKeyDown(moveRight, () => {
+        if (!sprinting) player.move(speed, 0)
+        else if (sprinting) player.move(sprintSpeed,0)
+
+    })
+    player.onUpdate(() => {camPos(player.pos)})
+
+     // Sprinting
+     onKeyDown("shift", () => {
+        sprinting = true
+     })
+     onKeyRelease("shift", () => {
+        sprinting = false
+     })
 
     // Hotbar switch and select
     // Switch to hotbar 1
@@ -358,10 +381,6 @@ scene('game', () => {
     // Everything inside Will run every frame
     onUpdate(() => {
         if (paused) return
-
-        // Sprinting
-        if (isKeyDown("shift")) speed = 120
-        onKeyRelease("shift", () => speed = 60)
 
         // updates health
         HP.text = playerHealth
