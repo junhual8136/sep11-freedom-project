@@ -213,7 +213,7 @@ function createStartMenu() {
         const hotbar3set =  add([text(changeToSlot3,{size: 50}),pos(hotbar3Rect.pos.x, hotbar3Rect.pos.y),anchor("center"),outline(1),fixed(),opacity(0.8),color(255,255,255),z(0),])
         hotbar3Rect.onClick(() => {popUp("changeToSlot3")})
 
-        const upgradeMenuScreen = add([text('upgradeMenu:',{size:50}),pos(gameWidth/2 + 100, 450),color(255,255,255),z(1),fixed(),])
+        const upgradeMenuScreen = add([text('upgrade:',{size:50}),pos(gameWidth/2 + 100, 450),color(255,255,255),z(1),fixed(),])
         const upgradeMenuScreenRect =  add([pos(upgradeMenuScreen.pos.x + 250, upgradeMenuScreen.pos.y + 25),rect(55, 60, {radius: 4}),anchor("center"),outline(1),fixed(),area(),opacity(0.8),color(0,0,0),z(0),])
         const upgradeMenuScreenset =  add([text(openTheUpgradeMenu,{size: 50}),pos(upgradeMenuScreenRect.pos.x, upgradeMenuScreenRect.pos.y),anchor("center"),outline(1),fixed(),opacity(0.8),color(255,255,255),z(0),])
         upgradeMenuScreenRect.onClick(() => {popUp("upgradeMenuScreen")})

@@ -199,53 +199,82 @@ scene('game', () => {
 
 
     // Upgrade menu
-    function upgradeMenu(openOrClose) {
-        const upgradeMenuBackground = add([
-            pos(gameWidth/2, gameHeight/2.5),
-            rect(900, 500, {radius: 12}),
-            outline(3),
-            fixed(),
-            anchor('center'),
-            color(0,0,0),
-            opacity(0.6),
-            z(1),
-        ])
-        const menuSingleDamage = add([
-            text(`Single Damage: ${singleDamage}`,{size:24}),
-            pos(upgradeMenuBackground.pos.x - 250, upgradeMenuBackground.pos.y - 150),
-            fixed(),
-            anchor('center'),
-            color(255,255,255),
-            z(1),
-        ])
-        const menuSingleDamageUpgrade = createMainButton('10',menuSingleDamage.pos.x + 150, menuSingleDamage.pos.y,80,60,() => {
-            if (isUpgradeMenuOpen) {
-                singleDamage++
-            }
-        })
+    // function upgradeMenu(openOrClose) {
 
-        const closeButton = createMainButton('Close',gameWidth/2, gameHeight - 300,240,80, () => {
-            if (isUpgradeMenuOpen) {
-                upgradeMenuBackground.hidden = true
-                closeButton.hidden = true
-                menuSingleDamage.hidden = true
-                menuSingleDamageUpgrade.hidden = true
+    isUpgradeMenuOpen = true
 
-                isUpgradeMenuOpen = false
-            }
-        })
+    const upgradeMenuBackground = add([
+        pos(gameWidth/2, gameHeight/2.5),
+        rect(1100, 500, {radius: 12}),
+        outline(3),
+        fixed(),
+        anchor('center'),
+        color(0,0,0),
+        opacity(0.6),
+        z(1),
+    ])
+    const menuSingleDamage = add([text(`Single Damage: ${singleDamage}`,{size:24}),pos(upgradeMenuBackground.pos.x - 250, upgradeMenuBackground.pos.y - 200),fixed(),anchor('center'),color(255,255,255),z(1),])
+    const menuSingleDamageUpgrade = createMainButton('10',menuSingleDamage.pos.x + 150, menuSingleDamage.pos.y,80,60,() => {
+        if (isUpgradeMenuOpen) singleDamage++
+    })
+    const menuTripleDamage = add([text(`Triple Damage: ${tripleDamage}`,{size:24}),pos(upgradeMenuBackground.pos.x - 250, upgradeMenuBackground.pos.y - 100),fixed(),anchor('center'),color(255,255,255),z(1),])
+    const menuTripleDamageUpgrade = createMainButton('10',menuTripleDamage.pos.x + 150, menuTripleDamage.pos.y,80,60,() => {
+        if (isUpgradeMenuOpen) tripleDamage++
+    })
+    const menuAutoDamage = add([text(`Auto Damage: ${autoDamage}`,{size:24}),pos(upgradeMenuBackground.pos.x - 250, upgradeMenuBackground.pos.y ),fixed(),anchor('center'),color(255,255,255),z(1),])
+    const menuAutoDamageUpgrade = createMainButton('10',menuAutoDamage.pos.x + 150, menuAutoDamage.pos.y,80,60,() => {
+        if (isUpgradeMenuOpen) autoDamage++
+    })
 
+
+    const menuSinglePiercing = add([text(`Single Piercing: ${singleGoThrough}`,{size:24}),pos(upgradeMenuBackground.pos.x + 150, upgradeMenuBackground.pos.y - 200),fixed(),anchor('center'),color(255,255,255),z(1),])
+    const menuSinglePiercingUpgrade = createMainButton('10',menuSinglePiercing.pos.x + 150, menuSinglePiercing.pos.y,80,60,() => {
+        if (isUpgradeMenuOpen) singleGoThrough++
+    })
+    const menuTriplePiercing = add([text(`Triple Piercing: ${tripleGoThrough}`,{size:24}),pos(upgradeMenuBackground.pos.x + 150, upgradeMenuBackground.pos.y - 100),fixed(),anchor('center'),color(255,255,255),z(1),])
+    const menuTriplePiercingUpgrade = createMainButton('10',menuTriplePiercing.pos.x + 150, menuTriplePiercing.pos.y,80,60,() => {
+        if (isUpgradeMenuOpen) tripleGoThrough++
+    })
+    const menuAutoPiercing = add([text(`Triple Piercing: ${autoGoThrough}`,{size:24}),pos(upgradeMenuBackground.pos.x + 150, upgradeMenuBackground.pos.y),fixed(),anchor('center'),color(255,255,255),z(1),])
+    const menuAutoPiercingUpgrade = createMainButton('10',menuAutoPiercing.pos.x + 150, menuAutoPiercing.pos.y,80,60,() => {
+        if (isUpgradeMenuOpen) autoGoThrough++
+    })
+
+    const closeButton = createMainButton('Close',gameWidth/2, gameHeight - 300,240,80, () => {
         if (isUpgradeMenuOpen) {
-            upgradeMenuBackground.hidden = false
-            closeButton.hidden = false
-            menuSingleDamage.hidden = false
-            menuSingleDamageUpgrade.hidden = false
-        }
+            upgradeMenuBackground.hidden = true
+            closeButton.hidden = true
+            menuSingleDamage.hidden = true
+            menuSingleDamageUpgrade.hidden = true
+            menuTripleDamage.hidden = true
+            menuTripleDamageUpgrade.hidden = true
+            menuAutoDamage.hidden = true
+            menuAutoDamageUpgrade.hidden = true
+            menuSinglePiercing.hidden = true
+            menuSinglePiercingUpgrade.hidden = true
+            menuTriplePiercing.hidden = true
+            menuTriplePiercingUpgrade.hidden = true
+            menuAutoPiercing.hidden = true
+            menuAutoPiercingUpgrade.hidden = true
 
-        onUpdate(() => {
-            menuSingleDamage.text = `Single Damage: ${singleDamage}`
-        })
-    }
+            isUpgradeMenuOpen = false
+
+        }
+    })
+
+
+
+    onUpdate(() => {
+        if (!isUpgradeMenuOpen) return
+        menuSingleDamage.text = `Single Damage: ${singleDamage}`
+        menuTripleDamage.text = `Triple damage: ${tripleDamage}`
+        menuAutoDamage.text = `Auto Damage: ${autoDamage}`
+        menuSinglePiercing.text = `Single Piercing: ${singleGoThrough}`
+        menuTriplePiercing.text = `Triple Piercing: ${tripleGoThrough}`
+        menuAutoPiercing.text = `Auto Piercing: ${autoGoThrough}`
+
+    })
+
     // Menu GUI
     const menuBG = add([
         pos(gameWidth/2 - 200, gameHeight/5),
@@ -381,10 +410,24 @@ scene('game', () => {
 
     // Opens upgrade menu
     onKeyPress(openTheUpgradeMenu, ()=> {
-        if (!isUpgradeMenuOpen) {
-            upgradeMenu(true)
+            if (isUpgradeMenuOpen) return
+
+            upgradeMenuBackground.hidden = false
+            closeButton.hidden = false
+            menuSingleDamage.hidden = false
+            menuSingleDamageUpgrade.hidden = false
+            menuTripleDamage.hidden = false
+            menuTripleDamageUpgrade.hidden = false
+            menuAutoDamage.hidden = false
+            menuAutoDamageUpgrade.hidden = false
+            menuSinglePiercing.hidden = false
+            menuSinglePiercingUpgrade.hidden = false
+            menuTriplePiercing.hidden = false
+            menuTriplePiercingUpgrade.hidden = false
+            menuAutoPiercing.hidden = false
+            menuAutoPiercingUpgrade.hidden = false
+
             isUpgradeMenuOpen = true
-        }
     })
 
     // Toggles debug mode
