@@ -24,6 +24,7 @@ let autoGoThrough = 1
 
 let speed = 90
 let maxHealth = 200
+let allUpgradeMenu
 kaboom({
     width: gameWidth,
     height: gameHeight,
@@ -68,6 +69,7 @@ function createMainButton(name,x,y,width=240,height = 80,ignoreThis) {
         anchor("center"),
         fixed(),
         z(2),
+        'upgradeMenu'
     ])
     mainButton.add([
         text(name),
@@ -142,6 +144,16 @@ scene('game', () => {
     let sprinting = false
 
     let isUpgradeMenuOpen = false
+    const upgradeCosts = {
+        singleDMG: 10,
+        singleGoThrough: 10,
+        tripleDMG: 10,
+        tripleGoThrough: 10,
+        autoDMG: 10,
+        autoGoThrough: 10,
+        maxHealth: 10,
+        speed: 10,
+    }
 
     // Heals the player every 5 seconds
     setInterval(() => {
@@ -201,7 +213,6 @@ scene('game', () => {
     // Upgrade menu
     // function upgradeMenu(openOrClose) {
 
-    isUpgradeMenuOpen = true
 
     const upgradeMenuBackground = add([
         pos(gameWidth/2, gameHeight/2.5),
@@ -212,70 +223,172 @@ scene('game', () => {
         color(0,0,0),
         opacity(0.6),
         z(1),
+        'upgradeMenu'
     ])
-    const menuSingleDamage = add([text(`Single Damage: ${singleDamage}`,{size:24}),pos(upgradeMenuBackground.pos.x - 250, upgradeMenuBackground.pos.y - 200),fixed(),anchor('center'),color(255,255,255),z(1),])
-    const menuSingleDamageUpgrade = createMainButton('10',menuSingleDamage.pos.x + 150, menuSingleDamage.pos.y,80,60,() => {
-        if (isUpgradeMenuOpen) singleDamage++
-    })
-    const menuTripleDamage = add([text(`Triple Damage: ${tripleDamage}`,{size:24}),pos(upgradeMenuBackground.pos.x - 250, upgradeMenuBackground.pos.y - 100),fixed(),anchor('center'),color(255,255,255),z(1),])
-    const menuTripleDamageUpgrade = createMainButton('10',menuTripleDamage.pos.x + 150, menuTripleDamage.pos.y,80,60,() => {
-        if (isUpgradeMenuOpen) tripleDamage++
-    })
-    const menuAutoDamage = add([text(`Auto Damage: ${autoDamage}`,{size:24}),pos(upgradeMenuBackground.pos.x - 250, upgradeMenuBackground.pos.y ),fixed(),anchor('center'),color(255,255,255),z(1),])
-    const menuAutoDamageUpgrade = createMainButton('10',menuAutoDamage.pos.x + 150, menuAutoDamage.pos.y,80,60,() => {
-        if (isUpgradeMenuOpen) autoDamage++
-    })
-    const menuSpeed = add([text(`Speed: ${speed}`,{size:24}),pos(upgradeMenuBackground.pos.x - 250, upgradeMenuBackground.pos.y + 100),fixed(),anchor('center'),color(255,255,255),z(1),])
-    const menuSpeedUpgrade = createMainButton('10',menuSpeed.pos.x + 150, menuSpeed.pos.y,80,60,() => {
-        if (isUpgradeMenuOpen) speed += 5
-    })
-
-
-    const menuSinglePiercing = add([text(`Single Piercing: ${singleGoThrough}`,{size:24}),pos(upgradeMenuBackground.pos.x + 150, upgradeMenuBackground.pos.y - 200),fixed(),anchor('center'),color(255,255,255),z(1),])
-    const menuSinglePiercingUpgrade = createMainButton('10',menuSinglePiercing.pos.x + 150, menuSinglePiercing.pos.y,80,60,() => {
-        if (isUpgradeMenuOpen) singleGoThrough++
-    })
-    const menuTriplePiercing = add([text(`Triple Piercing: ${tripleGoThrough}`,{size:24}),pos(upgradeMenuBackground.pos.x + 150, upgradeMenuBackground.pos.y - 100),fixed(),anchor('center'),color(255,255,255),z(1),])
-    const menuTriplePiercingUpgrade = createMainButton('10',menuTriplePiercing.pos.x + 150, menuTriplePiercing.pos.y,80,60,() => {
-        if (isUpgradeMenuOpen) tripleGoThrough++
-    })
-    const menuAutoPiercing = add([text(`Triple Piercing: ${autoGoThrough}`,{size:24}),pos(upgradeMenuBackground.pos.x + 150, upgradeMenuBackground.pos.y),fixed(),anchor('center'),color(255,255,255),z(1),])
-    const menuAutoPiercingUpgrade = createMainButton('10',menuAutoPiercing.pos.x + 150, menuAutoPiercing.pos.y,80,60,() => {
-        if (isUpgradeMenuOpen) autoGoThrough++
-    })
-    const menuMaxHealth = add([text(`Max Health: ${maxHealth}`,{size:24}),pos(upgradeMenuBackground.pos.x + 150, upgradeMenuBackground.pos.y + 100),fixed(),anchor('center'),color(255,255,255),z(1),])
-    const menuMaxHealthUpgrade = createMainButton('10',menuMaxHealth.pos.x + 150, menuMaxHealth.pos.y,80,60,() => {
-        if (isUpgradeMenuOpen) maxHealth += 10
-    })
-
-    const closeButton = createMainButton('Close',gameWidth/2, gameHeight - 300,240,80, () => {
-        if (isUpgradeMenuOpen) {
-            upgradeMenuBackground.hidden = true
-            closeButton.hidden = true
-            menuSingleDamage.hidden = true
-            menuSingleDamageUpgrade.hidden = true
-            menuTripleDamage.hidden = true
-            menuTripleDamageUpgrade.hidden = true
-            menuAutoDamage.hidden = true
-            menuAutoDamageUpgrade.hidden = true
-            menuSinglePiercing.hidden = true
-            menuSinglePiercingUpgrade.hidden = true
-            menuTriplePiercing.hidden = true
-            menuTriplePiercingUpgrade.hidden = true
-            menuAutoPiercing.hidden = true
-            menuAutoPiercingUpgrade.hidden = true
-            menuSpeed.hidden = true
-            menuSpeedUpgrade.hidden = true
-            menuMaxHealth.hidden = true
-            menuMaxHealthUpgrade.hidden = true
-            isUpgradeMenuOpen = false
-
+    const menuSingleDamage = add([text(`Single Damage: ${singleDamage}`,{size:24}),pos(upgradeMenuBackground.pos.x - 250, upgradeMenuBackground.pos.y - 200),fixed(),anchor('center'),color(255,255,255),z(1),'upgradeMenu'])
+    const menuSingleDamageUpgrade = createMainButton('+',menuSingleDamage.pos.x + 150, menuSingleDamage.pos.y,80,60,() => {
+        if (isUpgradeMenuOpen && totalCurrency - upgradeCosts.singleDMG >= 0) {
+            singleDamage++
+            totalCurrency -= upgradeCosts.singleDMG
+            upgradeCosts.singleDMG += 10
         }
     })
+    const menuSingleDamageCost = add([
+        text(`Cost: ${upgradeCosts.singleDMG}`, {size:24}),
+        pos(menuSingleDamage.pos.x - 100,menuSingleDamage.pos.y + 20),
+        z(1),
+        color(255,255,255),
+        fixed(),
+        'upgradeMenu'
+    ])
+    const menuTripleDamage = add([text(`Triple Damage: ${tripleDamage}`,{size:24}),pos(upgradeMenuBackground.pos.x - 250, upgradeMenuBackground.pos.y - 100),fixed(),anchor('center'),color(255,255,255),z(1),'upgradeMenu'])
+    const menuTripleDamageUpgrade = createMainButton('+',menuTripleDamage.pos.x + 150, menuTripleDamage.pos.y,80,60,() => {
+        if (isUpgradeMenuOpen && totalCurrency - upgradeCosts.singleDMG >= 0) {
+            tripleDamage++
+            totalCurrency -= upgradeCosts.tripleDMG
+            upgradeCosts.tripleDMG += 10
+        }
+    })
+    const menuTripleDamageCost = add([
+        text(`Cost: ${upgradeCosts.tripleDMG}`, {size:24}),
+        pos(menuTripleDamage.pos.x - 100,menuTripleDamage.pos.y + 20),
+        z(1),
+        color(255,255,255),
+        fixed(),
+        'upgradeMenu'
+    ])
 
+    const menuAutoDamage = add([text(`Auto Damage: ${autoDamage}`,{size:24}),pos(upgradeMenuBackground.pos.x - 250, upgradeMenuBackground.pos.y ),fixed(),anchor('center'),color(255,255,255),z(1),'upgradeMenu'])
+    const menuAutoDamageUpgrade = createMainButton('+',menuAutoDamage.pos.x + 150, menuAutoDamage.pos.y,80,60,() => {
+        if (isUpgradeMenuOpen && totalCurrency - upgradeCosts.autoDMG >= 0) {
+            autoDamage++
+            totalCurrency -= upgradeCosts.autoDMG
+            upgradeCosts.autoDMG += 10
+        }
+    })
+    const menuAutoDamageCost = add([
+        text(`Cost: ${upgradeCosts.autoDMG}`, {size:24}),
+        pos(menuAutoDamage.pos.x - 100,menuAutoDamage.pos.y + 20),
+        z(1),
+        color(255,255,255),
+        fixed(),
+        'upgradeMenu'
+    ])
+
+    const menuSpeed = add([text(`Speed: ${speed}`,{size:24}),pos(upgradeMenuBackground.pos.x - 250, upgradeMenuBackground.pos.y + 100),fixed(),anchor('center'),color(255,255,255),z(1),'upgradeMenu'])
+    const menuSpeedUpgrade = createMainButton('+',menuSpeed.pos.x + 150, menuSpeed.pos.y,80,60,() => {
+        if (isUpgradeMenuOpen && totalCurrency - upgradeCosts.speed >= 0) {
+            speed += 5
+            totalCurrency -= upgradeCosts.speed
+            upgradeCosts.speed += 10
+        }
+    })
+    const menuSpeedCost = add([
+        text(`Cost: ${upgradeCosts.speed}`, {size:24}),
+        pos(menuSpeed.pos.x - 100,menuSpeed.pos.y + 20),
+        z(1),
+        color(255,255,255),
+        fixed(),
+        'upgradeMenu'
+    ])
+
+
+
+    const menuSinglePiercing = add([text(`Single Piercing: ${singleGoThrough}`,{size:24}),pos(upgradeMenuBackground.pos.x + 200, upgradeMenuBackground.pos.y - 200),fixed(),anchor('center'),color(255,255,255),z(1),'upgradeMenu'])
+    const menuSinglePiercingUpgrade = createMainButton('+',menuSinglePiercing.pos.x + 150, menuSinglePiercing.pos.y,80,60,() => {
+        if (isUpgradeMenuOpen && totalCurrency - upgradeCosts.singleGoThrough >= 0) {
+            singleGoThrough++
+            totalCurrency -= upgradeCosts.singleGoThrough
+            upgradeCosts.singleGoThrough += 10
+        }
+    })
+    const menuSinglePiercingCost = add([
+        text(`Cost: ${upgradeCosts.singleGoThrough}`, {size:24}),
+        pos(menuSinglePiercing.pos.x - 100,menuSinglePiercing.pos.y + 20),
+        z(1),
+        color(255,255,255),
+        fixed(),
+        'upgradeMenu'
+    ])
+
+    const menuTriplePiercing = add([text(`Triple Piercing: ${tripleGoThrough}`,{size:24}),pos(upgradeMenuBackground.pos.x + 200, upgradeMenuBackground.pos.y - 100),fixed(),anchor('center'),color(255,255,255),z(1),'upgradeMenu'])
+    const menuTriplePiercingUpgrade = createMainButton('+',menuTriplePiercing.pos.x + 150, menuTriplePiercing.pos.y,80,60,() => {
+        if (isUpgradeMenuOpen && totalCurrency - upgradeCosts.tripleGoThrough >= 0) {
+            tripleGoThrough++
+            totalCurrency -= upgradeCosts.tripleGoThrough
+            upgradeCosts.tripleGoThrough += 10
+        }
+    })
+    const menuTriplePiercingCost = add([
+        text(`Cost: ${upgradeCosts.tripleGoThrough}`, {size:24}),
+        pos(menuTriplePiercing.pos.x - 100,menuTriplePiercing.pos.y + 20),
+        z(1),
+        color(255,255,255),
+        fixed(),
+        'upgradeMenu'
+    ])
+
+    const menuAutoPiercing = add([text(`Auto Piercing: ${autoGoThrough}`,{size:24}),pos(upgradeMenuBackground.pos.x + 200, upgradeMenuBackground.pos.y),fixed(),anchor('center'),color(255,255,255),z(1),'upgradeMenu'])
+    const menuAutoPiercingUpgrade = createMainButton('+',menuAutoPiercing.pos.x + 150, menuAutoPiercing.pos.y,80,60,() => {
+        if (isUpgradeMenuOpen && totalCurrency - upgradeCosts.autoGoThrough >= 0) {
+            autoGoThrough++
+            totalCurrency -= upgradeCosts.autoGoThrough
+            upgradeCosts.autoGoThrough += 10
+        }
+    })
+    const menuAutoPiercingCost = add([
+        text(`Cost: ${upgradeCosts.autoGoThrough}`, {size:24}),
+        pos(menuAutoPiercing.pos.x - 100,menuAutoPiercing.pos.y + 20),
+        z(1),
+        color(255,255,255),
+        fixed(),
+        'upgradeMenu'
+    ])
+
+    const menuMaxHealth = add([text(`Max Health: ${maxHealth}`,{size:24}),pos(upgradeMenuBackground.pos.x + 200, upgradeMenuBackground.pos.y + 100),fixed(),anchor('center'),color(255,255,255),z(1),'upgradeMenu'])
+    const menuMaxHealthUpgrade = createMainButton('+',menuMaxHealth.pos.x + 150, menuMaxHealth.pos.y,80,60,() => {
+        if (isUpgradeMenuOpen && totalCurrency - upgradeCosts.maxHealth >= 0) {
+            maxHealth += 10
+            totalCurrency -= upgradeCosts.maxHealth
+            upgradeCosts.maxHealth += 10
+        }
+    })
+    const menuMaxHealthCost = add([
+        text(`Cost: ${upgradeCosts.maxHealth}`, {size:24}),
+        pos(menuMaxHealth.pos.x - 100,menuMaxHealth.pos.y + 20),
+        z(1),
+        color(255,255,255),
+        fixed(),
+        'upgradeMenu'
+    ])
+
+    const currencyDisplay = add([
+        text(totalCurrency),
+        pos(upgradeMenuBackground.pos.x + 450,upgradeMenuBackground.pos.y - 220),
+        color(YELLOW),
+        fixed(),
+        z(2),
+        anchor('center'),
+        'upgradeMenu',
+    ])
+
+    const closeButton = createMainButton('Close',gameWidth/2, gameHeight - 275,240,80, () => {
+        if (isUpgradeMenuOpen) {
+            const allUpgradeMenu2 = get('upgradeMenu')
+            allUpgradeMenu2.forEach(element => {
+                element.hidden = true
+            })
+            isUpgradeMenuOpen = false
+        }
+    })
+    const allUpgradeMenus = get('upgradeMenu')
+    allUpgradeMenus.forEach(element => {
+        element.hidden = true
+    })
 
 
     onUpdate(() => {
+        console.log(isUpgradeMenuOpen)
         if (!isUpgradeMenuOpen) return
         menuSingleDamage.text = `Single Damage: ${singleDamage}`
         menuTripleDamage.text = `Triple damage: ${tripleDamage}`
@@ -285,8 +398,18 @@ scene('game', () => {
         menuAutoPiercing.text = `Auto Piercing: ${autoGoThrough}`
         menuSpeed.text = `Speed: ${speed}`
         menuMaxHealth.text = `Max Health: ${maxHealth}`
+        currencyDisplay.text = totalCurrency
 
+        menuSingleDamageCost.text = `Cost: ${upgradeCosts.singleDMG}`
+        menuTripleDamageCost.text = `Cost: ${upgradeCosts.tripleDMG}`
+        menuAutoDamageCost.text = `Cost: ${upgradeCosts.autoDMG}`
+        menuSingleDamageCost.text = `Cost: ${upgradeCosts.singleGoThrough}`
+        menuTripleDamageCost.text = `Cost: ${upgradeCosts.tripleGoThrough}`
+        menuAutoDamageCost.text = `Cost: ${upgradeCosts.autoGoThrough}`
+        menuSpeedCost.text = `Cost: ${upgradeCosts.speed}`
+        menuMaxHealth.text = `Cost: ${upgradeCosts.maxHealth}`
     })
+
 
     // Menu GUI
     const menuBG = add([
@@ -425,24 +548,9 @@ scene('game', () => {
     onKeyPress(openTheUpgradeMenu, ()=> {
             if (isUpgradeMenuOpen) return
 
-            upgradeMenuBackground.hidden = false
-            closeButton.hidden = false
-            menuSingleDamage.hidden = false
-            menuSingleDamageUpgrade.hidden = false
-            menuTripleDamage.hidden = false
-            menuTripleDamageUpgrade.hidden = false
-            menuAutoDamage.hidden = false
-            menuAutoDamageUpgrade.hidden = false
-            menuSinglePiercing.hidden = false
-            menuSinglePiercingUpgrade.hidden = false
-            menuTriplePiercing.hidden = false
-            menuTriplePiercingUpgrade.hidden = false
-            menuAutoPiercing.hidden = false
-            menuAutoPiercingUpgrade.hidden = false
-            menuSpeed.hidden = false
-            menuSpeedUpgrade.hidden = false
-            menuMaxHealth.hidden = false
-            menuMaxHealthUpgrade.hidden = false
+            allUpgradeMenus.forEach(element => {
+                element.hidden = false
+            })
 
             isUpgradeMenuOpen = true
     })
@@ -758,6 +866,7 @@ scene('game', () => {
         amountLeft1 += 5
         amountLeft2 += 2
         amountLeft3 += 10
+        totalCurrency += 10
         if (playerHealth < maxHealth)  playerHealth += 10
         destroy(drop)
 
