@@ -56,7 +56,7 @@ function createStartMenu() {
         fpsDisplay()
 
         const title = add([
-            text("name to be decided", {
+            text("Kaboom Game", {
                 font: 'times-new-roman',
                 size: 50,
             }),
