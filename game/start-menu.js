@@ -91,6 +91,7 @@ function createStartMenu() {
             ${(moveUp + moveLeft + moveDown + moveRight).toUpperCase()} to move around
             CLICK to shoot
             ${changeToSlot1},${changeToSlot2},${changeToSlot3} to switch to different things
+            ${openTheUpgradeMenu.toUpperCase()} to open upgrade Menu
             ESCAPE to pause / open menu
 
             Debug things:
@@ -103,7 +104,7 @@ function createStartMenu() {
             pos(gameWidth/6, 150),
             color(BLACK),
         ])
-        createButton('set controls',gameWidth/2,gameHeight - 300, () => {
+        createButton('set controls',gameWidth/2,gameHeight - 250, () => {
             go('controls')
         })
     })
