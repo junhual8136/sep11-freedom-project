@@ -447,7 +447,6 @@ scene('game', () => {
             goToStartMenu.hidden = true
             menuOpen = false
             paused = false
-            speed = 60
         }
     })
 
@@ -474,18 +473,22 @@ scene('game', () => {
     // movement
 
     onKeyDown(moveUp, () => {
+        if (paused) return
         if (!sprinting) player.move(0, -speed)
         else if (sprinting) player.move(0, -sprintSpeed)
     })
     onKeyDown(moveLeft, () => {
+        if (paused) return
         if (!sprinting) player.move(-speed, 0)
         else if (sprinting) player.move(-sprintSpeed, 0)
     })
     onKeyDown(moveDown, () => {
+        if (paused) return
         if (!sprinting) player.move(0, speed)
         else if (sprinting) player.move(0,sprintSpeed)
     })
     onKeyDown(moveRight, () => {
+        if (paused) return
         if (!sprinting) player.move(speed, 0)
         else if (sprinting) player.move(sprintSpeed,0)
 
@@ -550,7 +553,6 @@ scene('game', () => {
             goToStartMenu.hidden = false
             menuOpen = true
             paused = true
-            speed = 0
         }
     })
 
