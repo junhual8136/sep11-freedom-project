@@ -284,10 +284,11 @@ scene('game', () => {
 
     const menuSpeed = add([text(`Speed: ${speed}`,{size:24}),pos(upgradeMenuBackground.pos.x - 250, upgradeMenuBackground.pos.y + 100),fixed(),anchor('center'),color(255,255,255),z(1),'upgradeMenu'])
     const menuSpeedUpgrade = createMainButton('+',menuSpeed.pos.x + 150, menuSpeed.pos.y,80,60,() => {
-        if (isUpgradeMenuOpen && totalCurrency - upgradeCosts.speed >= 0) {
+        if (isUpgradeMenuOpen && totalCurrency - upgradeCosts.speed >= 0 && speed <= 200) {
             speed += 5
             totalCurrency -= upgradeCosts.speed
             upgradeCosts.speed += 10
+            sprintSpeed = speed * 2
         }
     })
     const menuSpeedCost = add([
@@ -765,7 +766,9 @@ scene('game', () => {
                     currentWave++
 
                     if (currentWave % 5 == 0) {
-                        hostileSpeed += 20
+                        if (hostileSpeed <= 200) {
+                            hostileSpeed += 20
+                        }
                         hostileDamage += 5
                         hostileHealth += 25
                         explosionDamage += 5
