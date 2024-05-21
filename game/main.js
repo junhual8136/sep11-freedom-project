@@ -25,11 +25,27 @@ let autoGoThrough = 1
 let speed = 90
 let maxHealth = 200
 let allUpgradeMenu
+
+let upgradeCosts = {
+    singleDMG: 10,
+    singleGoThrough: 10,
+    tripleDMG: 10,
+    tripleGoThrough: 10,
+    autoDMG: 10,
+    autoGoThrough: 10,
+    maxHealth: 10,
+    speed: 10,
+}
+
+let hostileHealth = 100
+let explosionDamage = 25
+
 kaboom({
     width: gameWidth,
     height: gameHeight,
     font: "sans-serif",
-    maxFPS: 144
+    maxFPS: 144,
+    root: document.querySelector(".game-screen"),
 })
 
 loadSprites()
@@ -144,16 +160,7 @@ scene('game', () => {
     let sprinting = false
 
     let isUpgradeMenuOpen = false
-    const upgradeCosts = {
-        singleDMG: 10,
-        singleGoThrough: 10,
-        tripleDMG: 10,
-        tripleGoThrough: 10,
-        autoDMG: 10,
-        autoGoThrough: 10,
-        maxHealth: 10,
-        speed: 10,
-    }
+
 
     // Heals the player every 5 seconds
     setInterval(() => {
@@ -388,7 +395,6 @@ scene('game', () => {
 
 
     onUpdate(() => {
-        console.log(isUpgradeMenuOpen)
         if (!isUpgradeMenuOpen) return
         menuSingleDamage.text = `Single Damage: ${singleDamage}`
         menuTripleDamage.text = `Triple damage: ${tripleDamage}`
@@ -403,11 +409,11 @@ scene('game', () => {
         menuSingleDamageCost.text = `Cost: ${upgradeCosts.singleDMG}`
         menuTripleDamageCost.text = `Cost: ${upgradeCosts.tripleDMG}`
         menuAutoDamageCost.text = `Cost: ${upgradeCosts.autoDMG}`
-        menuSingleDamageCost.text = `Cost: ${upgradeCosts.singleGoThrough}`
-        menuTripleDamageCost.text = `Cost: ${upgradeCosts.tripleGoThrough}`
-        menuAutoDamageCost.text = `Cost: ${upgradeCosts.autoGoThrough}`
+        menuSinglePiercing.text = `Cost: ${upgradeCosts.singleGoThrough}`
+        menuTriplePiercing.text = `Cost: ${upgradeCosts.tripleGoThrough}`
+        menuAutoPiercing.text = `Cost: ${upgradeCosts.autoGoThrough}`
         menuSpeedCost.text = `Cost: ${upgradeCosts.speed}`
-        menuMaxHealth.text = `Cost: ${upgradeCosts.maxHealth}`
+        menuMaxHealthCost.text = `Cost: ${upgradeCosts.maxHealth}`
     })
 
 
@@ -453,12 +459,16 @@ scene('game', () => {
 
     // Wave info HUD
     const waveInfo = add([
-        text(`Current Wave: ${currentWave} / Eniemes Alive: ${hostileAlive.length}`, {size: 24,}),
-        pos(gameWidth/2 - 150,30),
+        text(`Current Wave: ${currentWave}
+        Eniemes Alive: ${hostileAlive.length}`
+        , {size: 24,}),
+        pos(backgroundHP.pos.x + 55,backgroundHP.pos.y + 70),
         fixed(),
-        color(0,0,0),
+        anchor('center'),
+        color(255,255,255),
         z(1),
     ])
+
 
     // Controls
     // movement
@@ -641,11 +651,21 @@ scene('game', () => {
             autoGoThrough = 1
             speed = 90
             maxHealth = 200
+            upgradeCosts = {
+                singleDMG: 10,
+                singleGoThrough: 10,
+                tripleDMG: 10,
+                tripleGoThrough: 10,
+                autoDMG: 10,
+                autoGoThrough: 10,
+                maxHealth: 10,
+                speed: 10,
+            }
             endGame()
         }
 
         // Wave info
-        waveInfo.text = `Current Wave: ${currentWave} / Eniemes Alive: ${hostileAlive.length}`
+        waveInfo.text = `Current Wave: ${currentWave} \n Eniemes Alive: ${hostileAlive.length}`
 
         // Updates ammo count in the Hotbar HUD
         slot1Text.text = amountLeft1
@@ -716,13 +736,12 @@ scene('game', () => {
             }
             // 1/10 enemies will be a unique type
             if (explosive === 1) {
-                hostileAlive.push(add([sprite("red"), area(),body(),pos(randomX, randomY),scale(0.2),outline(5),offscreen({ destroy: false }),"hostile","explosive",{health: 100}]))
+                hostileAlive.push(add([sprite("red"), area(),body(),pos(randomX, randomY),scale(0.2),outline(5),offscreen({ destroy: false }),"hostile","explosive",{health: hostileHealth}]))
             } else {
-                hostileAlive.push(add([sprite("green"), area(),body(),pos(randomX, randomY),scale(0.2),outline(5),offscreen({ destroy: false }),"hostile",{health: 100}]))
+                hostileAlive.push(add([sprite("green"), area(),body(),pos(randomX, randomY),scale(0.2),outline(5),offscreen({ destroy: false }),"hostile",{health: hostileHealth}]))
             }
         }
     }
-
 
     // runs every 1 second, updates game time
     // each tick is a second and checks are run every tick
@@ -742,6 +761,27 @@ scene('game', () => {
                 setTimeout(() => {
                     wave(4 + 2 * currentWave)
                     currentWave++
+
+                    if (currentWave % 5 == 0) {
+                        hostileSpeed += 20
+                        hostileDamage += 5
+                        hostileHealth += 25
+                        explosionDamage += 5
+
+                        const reminder = add([
+                            text('Enemy speed, health and damage has increased', {size: 24}),
+                            pos(gameWidth/2,gameHeight - 25),
+                            anchor('center'),
+                            fixed(),
+                            z(2),
+                            color(255,255,255)
+                        ])
+                        setTimeout(() => {
+                            destroy(reminder)
+                        }, 3000);
+
+                    }
+
                     // deletes all ammo drops after 5 seconds when a new wave begins
                     drops.forEach((element,index)=> {
                         setTimeout(() => {
@@ -749,13 +789,11 @@ scene('game', () => {
                             drops.splice(index,1)
                         }, 5000);
                     });
-                }, 2000);
+                }, 3000);
                 // cooldown to prevent bug that calls the wave function twice due to lag
                 spawnCooldown = true
 
-                if (currentWave % 5 == 0) {
-                    hostileSpeed += 20
-                }
+
                 setTimeout(() => {
                     spawnCooldown = false
                 }, 4000);
@@ -859,7 +897,7 @@ scene('game', () => {
     // collisions
     // explosions, player looses 25 health
     onCollide('player','explosion', (player,explosion) => {
-        playerHealth -= 25
+        playerHealth -= explosionDamage
         console.log('in')
     })
     onCollide('player','drop', (player,drop) => {
