@@ -410,9 +410,9 @@ scene('game', () => {
         menuSingleDamageCost.text = `Cost: ${upgradeCosts.singleDMG}`
         menuTripleDamageCost.text = `Cost: ${upgradeCosts.tripleDMG}`
         menuAutoDamageCost.text = `Cost: ${upgradeCosts.autoDMG}`
-        menuSinglePiercing.text = `Cost: ${upgradeCosts.singleGoThrough}`
-        menuTriplePiercing.text = `Cost: ${upgradeCosts.tripleGoThrough}`
-        menuAutoPiercing.text = `Cost: ${upgradeCosts.autoGoThrough}`
+        menuSinglePiercingCost.text = `Cost: ${upgradeCosts.singleGoThrough}`
+        menuTriplePiercingCost.text = `Cost: ${upgradeCosts.tripleGoThrough}`
+        menuAutoPiercingCost.text = `Cost: ${upgradeCosts.autoGoThrough}`
         menuSpeedCost.text = `Cost: ${upgradeCosts.speed}`
         menuMaxHealthCost.text = `Cost: ${upgradeCosts.maxHealth}`
     })
