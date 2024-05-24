@@ -117,7 +117,7 @@ scene('game', () => {
     fpsDisplay()
     setBackground(BLACK)
 
-    const player = add([sprite("pale"), area(),body(),pos(750, 600),scale(2.5),"player"],)
+    const player = add([sprite("pale"), area(),body(),pos(750, 600),anchor('center'),scale(2.5),"player"],)
     const greenTest = add([
         circle(13),
         opacity(0.9),
@@ -146,8 +146,8 @@ scene('game', () => {
 
     let explosionKB = -30000
 
-    let hostileKB = -2000
-    let kb = 6000
+    let hostileKB = 2000
+    let kb = 4000
     let hostileDamage = 5
 
     const hostileAlive = []
@@ -160,7 +160,7 @@ scene('game', () => {
     let sprinting = false
 
     let isUpgradeMenuOpen = false
-
+    let testCommandMenuOpen = false
 
     // Heals the player every 5 seconds
     setInterval(() => {
@@ -217,6 +217,83 @@ scene('game', () => {
     ])
 
 
+    // Command bar used for testing
+    const testMenu = add([
+        rect(200,50),
+        pos(gameWidth/2,gameHeight - 250),
+        anchor('center'),
+        area(),
+        opacity(0.5),
+        color(0,0,0),
+        fixed(),
+        'testMenu',
+        'commandBar',
+    ])
+    const testMenuText = add([
+        text('', {size: 18}),
+        anchor('center'),
+        pos(testMenu.pos.x,testMenu.pos.y),
+        fixed(),
+        color(255,255,255),
+        'testMenu',
+    ])
+    onClick('commandBar', (command) => {
+        testCommandMenuOpen = true
+    })
+    let textCD = false
+    onCharInput((ch) => {
+        if (testCommandMenuOpen) {
+            if (textCD) return
+            testMenuText.text += ch
+            textCD = true
+            setTimeout(() => {
+                textCD = false
+            }, 50);
+
+        }
+    })
+        onKeyPress('backspace',() => {
+            if (testCommandMenuOpen) {
+                testMenuText.text = ''
+            }
+        })
+        onKeyPress('enter', () => {
+            if (testCommandMenuOpen) {
+                if (testCommandMenuOpen) {
+                    let execute = testMenuText.text
+                    if (execute.toLowerCase() == 'kill') {
+                        playerHealth = 0
+                    }
+                    if (execute.toLowerCase() == 'set 1000') {
+                        totalCurrency = 1000
+                    }
+                    let searchWave = new RegExp('add')
+                    if (searchWave.test(execute)) {
+                        let result = execute.match('[0-9]')
+                        currentWave += 9
+
+                    }
+                    hideCommandMenu('hide')
+                }
+            }
+        })
+
+    function hideCommandMenu(which) {
+        let allCommmandcomponents = get('testMenu')
+        if (which == 'show') {
+            testCommandMenuOpen = true
+            allCommmandcomponents.forEach(element => {
+                element.hidden = false
+            })
+        } else if (which == 'hide') {
+            testCommandMenuOpen = false
+            allCommmandcomponents.forEach(element => {
+                element.hidden = true
+            });
+        }
+    }
+
+    hideCommandMenu('hide')
     // Upgrade menu
     // function upgradeMenu(openOrClose) {
 
@@ -284,11 +361,10 @@ scene('game', () => {
 
     const menuSpeed = add([text(`Speed: ${speed}`,{size:24}),pos(upgradeMenuBackground.pos.x - 250, upgradeMenuBackground.pos.y + 100),fixed(),anchor('center'),color(255,255,255),z(1),'upgradeMenu'])
     const menuSpeedUpgrade = createMainButton('+',menuSpeed.pos.x + 150, menuSpeed.pos.y,80,60,() => {
-        if (isUpgradeMenuOpen && totalCurrency - upgradeCosts.speed >= 0 && speed <= 200) {
+        if (isUpgradeMenuOpen && totalCurrency - upgradeCosts.speed >= 0) {
             speed += 5
             totalCurrency -= upgradeCosts.speed
             upgradeCosts.speed += 10
-            sprintSpeed = speed * 2
         }
     })
     const menuSpeedCost = add([
@@ -508,11 +584,8 @@ scene('game', () => {
     // Switch to hotbar 1
     onKeyPress(changeToSlot1.toString(), () => {
         currentSlot = 1
-        damage = 20
-        hostileKB = 2000
         slot1.outline.width = 4
         slot1.outline.color = WHITE
-
         slot2.outline.width = 0
         slot2.outline.color = BLACK
         slot3.outline.width = 0
@@ -521,8 +594,6 @@ scene('game', () => {
     // Switch to hotbar 2
     onKeyPress(changeToSlot2.toString(), () => {
         currentSlot = 2
-        damage = 40
-        hostileKB = 3500
         slot2.outline.width = 4
         slot2.outline.color = WHITE
 
@@ -534,8 +605,6 @@ scene('game', () => {
     // Switch to hotbar 3
     onKeyPress(changeToSlot3.toString(), () => {
         currentSlot = 3
-        damage = 20
-        hostileKB = 2000
         slot3.outline.width = 4
         slot3.outline.color = WHITE
 
@@ -544,7 +613,10 @@ scene('game', () => {
         slot2.outline.width = 0
         slot2.outline.color = BLACK
     })
-
+    // opens command bar
+    onKeyPress('/', () => {
+        hideCommandMenu('show')
+    })
     // Opens Menu
     onKeyPress('escape', () => {
         if (!menuOpen) {
@@ -603,7 +675,7 @@ scene('game', () => {
     // single Shot for hotbar1
     function shoot(xOffset,yOffset,timeout = 1) {
         if (cooldown) return
-        currentProjectiles.push(add([sprite("yellow"),pos(player.pos.x + xOffset,player.pos.y + yOffset),area(),scale(0.2),move(toWorld(mousePos()).sub(player.pos),1500),offscreen({ destroy: true }),{piercing: singleGoThrough, fireType: 'single'},"projectile",]))
+        currentProjectiles.push(add([sprite("yellow"),pos(player.pos.x + xOffset,player.pos.y + yOffset),anchor("center"),area(),scale(0.2),move(toWorld(mousePos()).sub(player.pos),1500),offscreen({ destroy: true }),{piercing: singleGoThrough, fireType: 'single'},"projectile",]))
          amountLeft1--
         cooldown = true
         setTimeout(() => {
@@ -644,13 +716,12 @@ scene('game', () => {
 
         // prompts the dead menu
         if (HP.value <= 0) {
-            currentWave = 0
             totalCurrency = 0
-            singleDamage = 0
+            singleDamage = 20
             singleGoThrough = 1
-            tripleDamage = 0
+            tripleDamage = 20
             tripleGoThrough = 2
-            autoDamage = 0
+            autoDamage = 20
             autoGoThrough = 1
             speed = 90
             maxHealth = 200
@@ -664,6 +735,7 @@ scene('game', () => {
                 maxHealth: 10,
                 speed: 10,
             }
+            currentWave = 0
             endGame()
         }
 
@@ -739,9 +811,9 @@ scene('game', () => {
             }
             // 1/10 enemies will be a unique type
             if (explosive === 1) {
-                hostileAlive.push(add([sprite("red"), area(),body(),pos(randomX, randomY),scale(0.2),outline(5),offscreen({ destroy: false }),"hostile","explosive",{health: hostileHealth}]))
+                hostileAlive.push(add([sprite("red"), area(),body(),pos(randomX, randomY),scale(0.2),outline(5),anchor("center"),offscreen({ destroy: false }),"hostile","explosive",{health: hostileHealth}]))
             } else {
-                hostileAlive.push(add([sprite("green"), area(),body(),pos(randomX, randomY),scale(0.2),outline(5),offscreen({ destroy: false }),"hostile",{health: hostileHealth}]))
+                hostileAlive.push(add([sprite("green"), area(),body(),pos(randomX, randomY),scale(0.2),outline(5),anchor("center"),offscreen({ destroy: false }),"hostile",{health: hostileHealth}]))
             }
         }
     }
@@ -766,9 +838,7 @@ scene('game', () => {
                     currentWave++
 
                     if (currentWave % 5 == 0) {
-                        if (hostileSpeed <= 200) {
-                            hostileSpeed += 20
-                        }
+                        hostileSpeed += 20
                         hostileDamage += 5
                         hostileHealth += 25
                         explosionDamage += 5
@@ -836,17 +906,18 @@ scene('game', () => {
         projectile.piercing -= 1
 
         // checks from which direction the bullet hit the enemy and deal knockback toward that direction
-        if (hostile.pos.x > projectile.pos.x) { // from right
-            hostile.move(hostileKB, 0)
+        if (hostile.pos.x > projectile.pos.x) { // from left
+            hostile.move(2000, 0)
         }
-        else if (hostile.pos.x < projectile.pos.x) { // from left
-            hostile.move(-hostileKB, 0)
+        else if (hostile.pos.x < projectile.pos.x) { // from right
+            hostile.move(-2000, 0)
         }
-        else if (hostile.pos.y > projectile.pos.x) { // from top
-            hostile.move(0, hostileKB)
+
+        if (hostile.pos.y < projectile.pos.y) { // from top
+            hostile.move(0, -2000)
         }
-        else if (hostile.pos.y < projectile.pos.x) { // from bottom
-            hostile.move(0, -hostileKB)
+        else if (hostile.pos.y > projectile.pos.y) { // from bottom
+            hostile.move(0, 2000)
         }
         // deletes the enemy if health is 0 or below
         // spawns an ammo drop at that death location
@@ -922,16 +993,17 @@ scene('game', () => {
         else playerHealth -= hostileDamage
 
         // checks if player was hit by an enemy and will knock the player back from the direction it was hit from
-        if (hostile.pos.x > player.pos.x) { // from right
+        if (hostile.pos.x > player.pos.x + 10) { // from right
             player.move(-kb, 0)
         }
-        else if (hostile.pos.x < player.pos.x) { // from left
+        else if (hostile.pos.x < player.pos.x - 10) { // from left
             player.move(kb, 0)
         }
-        else if (hostile.pos.y > player.pos.x) { // from top
+
+        if (hostile.pos.y > player.pos.y) { // from top
             player.move(0, -kb)
         }
-        else if (hostile.pos.y < player.pos.x) { // from bottom
+        else if (hostile.pos.y < player.pos.y) { // from bottom
             player.move(0, kb)
         }
     })
