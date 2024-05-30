@@ -34,6 +34,30 @@ Some skills I've improved from this project was time management, I had to get my
 I made a reusable function that creates buttons, which allowed me to create UIs easily, changing certain parameters to fit the context.
 
 ### content
+#### Expo 
+During my expo presentation, my goal was to not stumble on my pitch which was something difficult as I was not good at public speaking or presenting. I somewhat acheived this through making my elevator pitch simple which was:
+[link](https://docs.google.com/document/d/1CTkA5cejtmFIsAXrzmy3vTPbwRi9JOe1MUS77tNvC3s/edit?usp=drive_web&ouid=106478877337369976452)
+```
+Hello my name is Junhua,
+I made a top-down shooter with kaboom.js
+Which I'll demo right now,
+we can change the controls before we start
+enemies will spawn and you can shoot them
+once they die,
+a new wave will spawn,
+the game doesn't have a clear ending,
+the goal is to get to the highest wave you can,
+you can also buy upgrades to help you in higher waves
+```
+which was short enough to be said under a minute gives a basic overview of what i Made
+
+#### In class presentation 
+[link](https://docs.google.com/presentation/d/1YjBGGBWw0L0pfHdGI_GWlrywG2UYlI3lDZEz4mcNhSw/edit?usp=drive_web&ouid=106478877337369976452)
+
+
+My main takeaways from the in class presentation was to add a bit of text that isn't code to the slides because I had to rely on looking at what I put on the slide, and give an explanation as I present. 
+
+I also attempted to pratice my presentation through talking to a person and myself but that didn't work as presenting to a class with a lot of people is different than a one on one conversation. 
 
 [Previous](entry05.md) | [Next](entry07.md)
 
